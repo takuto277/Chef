@@ -7,22 +7,14 @@
 
 import SwiftData
 
-internal protocol SwiftDataGateway: Actor {
-    associatedtype ModelType: PersistentModel
-    func create(data: ModelType) throws
-    func fetchAllFoods() throws -> [ModelType]
-    func deleteFood() throws
-}
-
-internal actor SwiftDataGatewayImpl<T: PersistentModel>: SwiftDataGateway {
-    typealias ModelType = T
+internal actor SwiftDataGatewayImpl<T: PersistentModel> {
     private var container: ModelContainer?
     
     init() {
         self.container = try? ModelContainer(for: T.self)
     }
 
-    func create(data: T) throws {
+    func create(data: T) async throws {
         guard let container = self.container else { return }
         let context = ModelContext(container)
         
@@ -30,8 +22,8 @@ internal actor SwiftDataGatewayImpl<T: PersistentModel>: SwiftDataGateway {
         try context.save()
     }
 
-    func fetchAllFoods() throws -> [T] {
-        guard let container = self.container else { return []}
+    func fetchAllFoods() async throws -> [T] {
+        guard let container = self.container else { return [] }
         let context = ModelContext(container)
         
         do {
@@ -43,7 +35,7 @@ internal actor SwiftDataGatewayImpl<T: PersistentModel>: SwiftDataGateway {
         }
     }
 
-    func deleteFood() throws {
+    func deleteFood() async throws {
         guard let container = self.container else { return }
         let context = ModelContext(container)
         
