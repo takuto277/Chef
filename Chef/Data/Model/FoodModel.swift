@@ -6,13 +6,16 @@
 //
 
 import SwiftData
+import Foundation
 
 @Model
-class Food: PersistentModel {
+final class Food {
+    @Attribute(.unique) var id: UUID
     var name: String
     var calories: Int
-
-    init(name: String, calories: Int) {
+    
+    init(id: UUID = UUID(), name: String, calories: Int) {
+        self.id = id
         self.name = name
         self.calories = calories
     }
