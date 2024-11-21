@@ -15,7 +15,7 @@ final class HomeUseCaseImpl: HomeUseCase {
     private let foodRepository: FoodRepository
     
     init(
-        foodRepository: FoodRepository = FoodRepositoryImpl()
+        foodRepository: FoodRepository = FoodRepositoryFactory.createRepository()
     ) {
         self.foodRepository = foodRepository
     }
