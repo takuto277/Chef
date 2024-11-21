@@ -8,7 +8,7 @@
 import Foundation
 
 internal protocol HomeUseCase {
-    
+    func addFoodAndFetchAll(name: String, calories: Int) async throws -> [Food]
 }
 
 final class HomeUseCaseImpl: HomeUseCase {
@@ -18,5 +18,11 @@ final class HomeUseCaseImpl: HomeUseCase {
         foodRepository: FoodRepository = FoodRepositoryFactory.createRepository()
     ) {
         self.foodRepository = foodRepository
+    }
+
+    func addFoodAndFetchAll(name: String, calories: Int) async throws -> [Food] {
+        try await foodRepository.addFood(name: name, calories: calories)
+        let allFoods = try await foodRepository.getAllFoods()
+        return allFoods
     }
 }
