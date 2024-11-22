@@ -16,8 +16,12 @@ internal actor SwiftDataGatewayImpl<T: PersistentModel> {
         self.context = ModelContext(ModelContainerProvider.shared)
     }
     func create(data: T) async throws {
-        context.insert(data)
-        try context.save()
+        do {
+            context.insert(data)
+            try context.save()
+        } catch {
+            print("データの取得に作成しました: \(error)")
+        }
     }
 
     func fetchAllFoods() async throws -> [T] {
