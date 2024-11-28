@@ -8,21 +8,40 @@
 import Foundation
 
 internal protocol HomeUseCase {
-    func addFoodAndFetchAll(name: String, calories: Int) async throws -> [Food]
+    func create(name: String, imageData: Data?, category: String, quantity: Int, expirationDate: String, memo: String) async throws
 }
 
 final class HomeUseCaseImpl: HomeUseCase {
     private let foodRepository: FoodRepository
     
-    init(
+    internal init(
         foodRepository: FoodRepository = FoodRepositoryFactory.createRepository()
     ) {
         self.foodRepository = foodRepository
     }
-
-    func addFoodAndFetchAll(name: String, calories: Int) async throws -> [Food] {
-        try await foodRepository.addFood(name: name, calories: calories)
-        let allFoods = try await foodRepository.getAllFoods()
-        return allFoods
+    
+    internal func create(
+        name: String,
+        imageData: Data?,
+        category: String,
+        quantity: Int,
+        expirationDate: String,
+        memo: String
+    ) async throws {
+        let id = try await foodRepository.fetchMaxIdCount()
+        let nowDate = Date.getCurrentDateString()
+        let food = Food(
+            id: id,
+            name: name,
+            category: category,
+            quantity: quantity,
+            expirationDate: expirationDate,
+            memo: memo,
+            imageData: imageData,
+            createTime: nowDate,
+            updateTime: nowDate,
+            purchaseCount: 0
+        )
+        try await foodRepository.addFood(food: food)
     }
 }
