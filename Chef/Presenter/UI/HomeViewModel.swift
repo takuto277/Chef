@@ -34,14 +34,7 @@ internal class HomeViewModel: ObservableObject {
             .sink { [weak self] in
                 guard let self else { return }
                 Task {
-                    do {
-                        if let calories = Int(self.output.foodCalories) {
-                            let foods = try await self.useCase.addFoodAndFetchAll(name: self.output.foodName, calories: calories)
-                            for i in foods {
-                                print("保存された食品: \(i.name), \(i.calories)カロリー")
-                            }
-                        }
-                    }
+                    
                 }
             }
             .store(in: &cancellables)
