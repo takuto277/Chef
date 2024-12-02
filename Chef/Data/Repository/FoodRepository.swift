@@ -9,9 +9,10 @@ import Foundation
 
 internal protocol FoodRepository: Actor {
     func addFood(food: Food) async throws
-    func getAllFoods() async throws -> [Food]
+    func fetchAllFoods() async throws -> [Food]
     func removeFood() async throws
     func fetchMaxIdCount() async throws -> Int
+    func updateFood(oldFood: Food) async throws
 }
 
 internal actor FoodRepositoryImpl: FoodRepository {
@@ -25,7 +26,7 @@ internal actor FoodRepositoryImpl: FoodRepository {
         try await gateway.create(data: food)
     }
     
-    internal func getAllFoods() async throws -> [Food] {
+    internal func fetchAllFoods() async throws -> [Food] {
         return try await gateway.fetchAllFoods()
     }
     
