@@ -39,4 +39,12 @@ internal actor FoodRepositoryImpl: FoodRepository {
        let maxId = foods.map { $0.id }.max() ?? 0
         return maxId + 1
     }
+    
+    internal func updateFood(oldFood: Food) async throws {
+        // TODO: 更新したいパラメータを引数に持たせ代入させる
+        oldFood.updateTime = Date.getCurrentDateString()
+        oldFood.purchaseCount += 1
+        
+        try await gateway.update()
+    }
 }
