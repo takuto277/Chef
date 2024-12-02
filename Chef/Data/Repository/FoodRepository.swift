@@ -9,9 +9,10 @@ import Foundation
 
 internal protocol FoodRepository: Actor {
     func addFood(food: Food) async throws
-    func getAllFoods() async throws -> [Food]
+    func fetchAllFoods() async throws -> [Food]
     func removeFood() async throws
     func fetchMaxIdCount() async throws -> Int
+    func updateFood(oldFood: Food) async throws
 }
 
 internal actor FoodRepositoryImpl: FoodRepository {
@@ -25,7 +26,7 @@ internal actor FoodRepositoryImpl: FoodRepository {
         try await gateway.create(data: food)
     }
     
-    internal func getAllFoods() async throws -> [Food] {
+    internal func fetchAllFoods() async throws -> [Food] {
         return try await gateway.fetchAllFoods()
     }
     
@@ -37,5 +38,13 @@ internal actor FoodRepositoryImpl: FoodRepository {
        let foods = try await gateway.fetchAllFoods()
        let maxId = foods.map { $0.id }.max() ?? 0
         return maxId + 1
+    }
+    
+    internal func updateFood(oldFood: Food) async throws {
+        // TODO: 更新したいパラメータを引数に持たせ代入させる
+        oldFood.updateTime = Date.getCurrentDateString()
+        oldFood.purchaseCount += 1
+        
+        try await gateway.update()
     }
 }

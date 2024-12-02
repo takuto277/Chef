@@ -6,6 +6,7 @@
 //
 
 import SwiftData
+import Foundation
 
 internal actor SwiftDataGatewayImpl<T: PersistentModel> {
     typealias ModelType = T
@@ -40,6 +41,15 @@ internal actor SwiftDataGatewayImpl<T: PersistentModel> {
             try context.save()
         } catch {
             print("全データの削除に失敗しました: \(error)")
+        }
+    }
+
+    func update() async throws {
+        do {
+            try context.save()
+        } catch {
+            print("データの更新に失敗しました: \(error)")
+            throw error
         }
     }
 }

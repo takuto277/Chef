@@ -9,6 +9,8 @@ import Foundation
 
 internal protocol HomeUseCase {
     func create(name: String, imageData: Data?, category: String, quantity: Int, expirationDate: String, memo: String) async throws
+    func fetchAll() async throws -> [Food]
+    func update(oldFood: Food) async throws
 }
 
 final class HomeUseCaseImpl: HomeUseCase {
@@ -43,5 +45,13 @@ final class HomeUseCaseImpl: HomeUseCase {
             purchaseCount: 0
         )
         try await foodRepository.addFood(food: food)
+    }
+    
+    internal func fetchAll() async throws -> [Food] {
+        try await foodRepository.fetchAllFoods()
+    }
+    
+    internal func update(oldFood: Food) async throws {
+        try await foodRepository.updateFood(oldFood: oldFood)
     }
 }
