@@ -38,7 +38,19 @@ internal class HomeViewModel: ObservableObject {
                     try? await self.useCase.create(name: "これは更新前", imageData: nil, category: "", quantity: 1, expirationDate: "", memo: "")
                     let hoge = try? await self.useCase.fetchAll()
                     hoge?.forEach { i in
-                        print("\(i.name):\(i.id)")
+                        Task {
+                            print("\(i.name):\(i.id)")
+                            i.name = "これは更新後"
+                            try? await self.useCase.update(oldFood: i)
+                        }
+                    }
+                    let fuga = try? await self.useCase.fetchAll()
+                    fuga?.forEach { i in
+                        Task {
+                    //        i.name = "これは更新後"
+                     //       try? await self.useCase.update(oldFood: i)
+                            print("\(i.name):\(i.id)")
+                        }
                     }
                 }
             }

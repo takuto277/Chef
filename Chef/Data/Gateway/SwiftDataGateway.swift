@@ -9,37 +9,43 @@ import SwiftData
 import Foundation
 
 @ModelActor
-internal actor SwiftDataGatewayImpl<T: PersistentModel> {
-    typealias ModelType = T
-    
-    func create(data: T) async throws {
+internal actor SwiftDataGatewayImpl {
+    func create(model: any DBModel) async throws {
+        modelContext.insert(model)
         do {
-            modelContext.insert(data)
             try modelContext.save()
         } catch {
-            print("データの取得に作成しました: \(error)")
+            print("データの作成に失敗しました: \(error)")
+            throw error
         }
     }
 
-    func fetchAllFoods() async throws -> [T] {
+    // 全モデルの取得
+    func fetchAll<T: DBModel>(ofType type: T.Type) async throws -> [T] {
         do {
             let descriptor = FetchDescriptor<T>()
             return try modelContext.fetch(descriptor)
         } catch {
             print("データの取得に失敗しました: \(error)")
-            return []
+            throw error
         }
     }
 
-    func deleteFood() async throws {
+    // 全モデルの削除
+    func deleteAll<T: DBModel>(ofType type: T.Type) async throws {
+        let models = try await fetchAll(ofType: type)
+        for model in models {
+            modelContext.delete(model)
+        }
         do {
-            try modelContext.delete(model: T.self)
             try modelContext.save()
         } catch {
-            print("全データの削除に失敗しました: \(error)")
+            print("データの削除に失敗しました: \(error)")
+            throw error
         }
     }
 
+    // データの更新
     func update() async throws {
         do {
             try modelContext.save()

@@ -16,26 +16,26 @@ internal protocol FoodRepository: Actor {
 }
 
 internal actor FoodRepositoryImpl: FoodRepository {
-    private let gateway: SwiftDataGatewayImpl<Food>
+    private let gateway: SwiftDataGatewayImpl
     
-    init(gateway: SwiftDataGatewayImpl<Food>) {
+    init(gateway: SwiftDataGatewayImpl) {
         self.gateway = gateway
     }
     
     internal func addFood(food: Food) async throws {
-        try await gateway.create(data: food)
+        try await gateway.create(model: food)
     }
     
     internal func fetchAllFoods() async throws -> [Food] {
-        return try await gateway.fetchAllFoods()
+        return try await gateway.fetchAll(ofType: Food.self)
     }
     
     internal func removeFood() async throws {
-        try await gateway.deleteFood()
+        try await gateway.deleteAll(ofType: Food.self)
     }
     
     internal func fetchMaxIdCount() async throws -> Int {
-       let foods = try await gateway.fetchAllFoods()
+        let foods = try await gateway.fetchAll(ofType: Food.self)
        let maxId = foods.map { $0.id }.max() ?? 0
         return maxId + 1
     }

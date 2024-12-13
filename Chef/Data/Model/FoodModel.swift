@@ -9,7 +9,7 @@ import SwiftData
 import Foundation
 
 @Model
-final class Food {
+final class Food: DBModel {
     var createTime: String
     var updateTime: String
     @Attribute(.unique) var id: Int
