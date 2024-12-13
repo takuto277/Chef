@@ -9,7 +9,7 @@ import Foundation
 
 internal class FoodRepositoryFactory {
     static func createRepository() -> FoodRepositoryImpl {
-        let gateway = SwiftDataGatewayImpl<Food>()
+        let gateway = SwiftDataGatewayImpl<Food>(modelContainer: ModelContainerProvider.shared)
         return FoodRepositoryImpl(gateway: gateway)
     }
 }

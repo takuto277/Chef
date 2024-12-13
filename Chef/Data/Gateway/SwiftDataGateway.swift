@@ -8,18 +8,14 @@
 import SwiftData
 import Foundation
 
+@ModelActor
 internal actor SwiftDataGatewayImpl<T: PersistentModel> {
     typealias ModelType = T
     
-    private var context: ModelContext
-    
-    init() {
-        self.context = ModelContext(ModelContainerProvider.shared)
-    }
     func create(data: T) async throws {
         do {
-            context.insert(data)
-            try context.save()
+            modelContext.insert(data)
+            try modelContext.save()
         } catch {
             print("データの取得に作成しました: \(error)")
         }
@@ -28,7 +24,7 @@ internal actor SwiftDataGatewayImpl<T: PersistentModel> {
     func fetchAllFoods() async throws -> [T] {
         do {
             let descriptor = FetchDescriptor<T>()
-            return try context.fetch(descriptor)
+            return try modelContext.fetch(descriptor)
         } catch {
             print("データの取得に失敗しました: \(error)")
             return []
@@ -37,8 +33,8 @@ internal actor SwiftDataGatewayImpl<T: PersistentModel> {
 
     func deleteFood() async throws {
         do {
-            try context.delete(model: T.self)
-            try context.save()
+            try modelContext.delete(model: T.self)
+            try modelContext.save()
         } catch {
             print("全データの削除に失敗しました: \(error)")
         }
@@ -46,7 +42,7 @@ internal actor SwiftDataGatewayImpl<T: PersistentModel> {
 
     func update() async throws {
         do {
-            try context.save()
+            try modelContext.save()
         } catch {
             print("データの更新に失敗しました: \(error)")
             throw error
