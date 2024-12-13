@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  RefrigeratorView.swift
 //  Chef
 //
 //  Created by 小野拓人 on 2024/11/21.
@@ -8,18 +8,18 @@
 import SwiftUI
 import Combine
 
-struct HomeView: View {
-    @StateObject private var viewModel: HomeViewModel
+struct RefrigeratorView: View {
+    @StateObject private var viewModel: RefrigeratorViewModel
     
     let addFoodSubject = PassthroughSubject<Void, Never>()
     
-    @ObservedObject private var output: HomeViewModel.Output
+    @ObservedObject private var output: RefrigeratorViewModel.Output
     
     init() {
         let useCase: HomeUseCase = HomeUseCaseImpl()
-        let viewModel: HomeViewModel = HomeViewModel(useCase: useCase)
+        let viewModel: RefrigeratorViewModel = RefrigeratorViewModel(useCase: useCase)
         _viewModel = StateObject(wrappedValue: viewModel)
-        let input = HomeViewModel.Input(addFoodSubject: addFoodSubject.eraseToAnyPublisher())
+        let input = RefrigeratorViewModel.Input(addFoodSubject: addFoodSubject.eraseToAnyPublisher())
         output = viewModel.subscribe(input: input)
     }
     
@@ -60,6 +60,6 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        RefrigeratorView()
     }
 }
