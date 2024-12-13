@@ -14,7 +14,7 @@ struct OpenView: View {
     @State private var isActive = false
     var body: some View {
         if isActive {
-            HomeView()
+            TabBarView()
         } else {
             VStack{
                 Button(action: {
