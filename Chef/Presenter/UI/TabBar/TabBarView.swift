@@ -8,27 +8,34 @@
 import SwiftUI
 
 struct TabBarView: View {
+    @State private var selectedTab = 0
+
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             RefrigeratorView()
                 .tabItem {
-                    Label("ホーム", systemImage: "house")
+                    Label("レシピ集", image: selectedTab == 0 ? "image_recipe_focus" : "image_recipe")
                 }
+                .tag(0)
             
             RefrigeratorView()
                 .tabItem {
-                    Label("検索", systemImage: "magnifyingglass")
+                    Label("冷蔵庫の中", image: selectedTab == 1 ? "image_refrigerator_focus" : "image_refrigerator")
                 }
+                .tag(1)
             
             RefrigeratorView()
                 .tabItem {
-                    Label("プロフィール", systemImage: "person.circle")
+                    Label("買い物リスト", image: selectedTab == 2 ? "image_shoping_list_focus" : "image_shoping_list")
                 }
+                .tag(2)
             
             RefrigeratorView()
                 .tabItem {
-                    Label("設定", systemImage: "gearshape")
+                    Label("設定", image: selectedTab == 3 ? "image_setting_focus" : "image_setting")
                 }
+                .tag(3)
         }
+        .accentColor(.tabBarFocus)
     }
 }
