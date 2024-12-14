@@ -21,11 +21,11 @@ extension RefrigeratorViewModel {
 
 internal class RefrigeratorViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
-    private let useCase: HomeUseCase
+    private let useCase: RefrigeratorUseCase
     var output = Output()
     
     
-    init(useCase: HomeUseCase) {
+    init(useCase: RefrigeratorUseCase) {
         self.useCase = useCase
     }
     

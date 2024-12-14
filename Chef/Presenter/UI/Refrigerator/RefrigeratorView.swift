@@ -16,7 +16,7 @@ struct RefrigeratorView: View {
     @ObservedObject private var output: RefrigeratorViewModel.Output
     
     init() {
-        let useCase: HomeUseCase = HomeUseCaseImpl()
+        let useCase: RefrigeratorUseCase = RefrigeratorUseCaseImpl()
         let viewModel: RefrigeratorViewModel = RefrigeratorViewModel(useCase: useCase)
         _viewModel = StateObject(wrappedValue: viewModel)
         let input = RefrigeratorViewModel.Input(addFoodSubject: addFoodSubject.eraseToAnyPublisher())
