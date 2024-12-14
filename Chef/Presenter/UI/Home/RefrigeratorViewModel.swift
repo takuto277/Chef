@@ -1,5 +1,5 @@
 //
-//  HomeViewModel.swift
+//  RefrigeratorViewModel.swift
 //  Chef
 //
 //  Created by 小野拓人 on 2024/11/21.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-extension HomeViewModel {
+extension RefrigeratorViewModel {
     struct Input {
         let addFoodSubject: AnyPublisher<Void, Never>
     }
@@ -19,7 +19,7 @@ extension HomeViewModel {
     }
 }
 
-internal class HomeViewModel: ObservableObject {
+internal class RefrigeratorViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let useCase: HomeUseCase
     var output = Output()
