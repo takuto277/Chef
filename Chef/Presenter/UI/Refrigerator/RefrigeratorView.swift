@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 
+// test用
 struct Foods {
     let count: Int = 1
     let name: String
@@ -17,7 +18,6 @@ struct RefrigeratorView: View {
     @StateObject private var viewModel: RefrigeratorViewModel
     
     let addFoodSubject = PassthroughSubject<Void, Never>()
-    
     
     @ObservedObject private var output: RefrigeratorViewModel.Output
     
@@ -29,6 +29,7 @@ struct RefrigeratorView: View {
         output = viewModel.subscribe(input: input)
     }
     
+    // test用
     let arrayFoods = [Foods(name: "玉ねぎ"), Foods(name: "ねぎ"), Foods(name: "レモン"), Foods(name: "白菜")]
     
     var body: some View {
