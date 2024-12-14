@@ -9,6 +9,15 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var selectedTab = 0
+    
+    init() {
+        let appearance = UITabBarAppearance()
+        appearance.backgroundColor = .barBackground
+        UITabBar.appearance().standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -37,5 +46,6 @@ struct TabBarView: View {
                 .tag(3)
         }
         .accentColor(.tabBarFocus)
+        .background(.black)
     }
 }
