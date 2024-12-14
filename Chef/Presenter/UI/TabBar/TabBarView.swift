@@ -12,7 +12,7 @@ struct TabBarView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            RefrigeratorView()
+            RecipeView()
                 .tabItem {
                     Label("レシピ集", image: selectedTab == 0 ? "image_recipe_focus" : "image_recipe")
                 }
@@ -24,13 +24,13 @@ struct TabBarView: View {
                 }
                 .tag(1)
             
-            RefrigeratorView()
+            ShoppingListView()
                 .tabItem {
                     Label("買い物リスト", image: selectedTab == 2 ? "image_shoping_list_focus" : "image_shoping_list")
                 }
                 .tag(2)
             
-            RefrigeratorView()
+            SettingView()
                 .tabItem {
                     Label("設定", image: selectedTab == 3 ? "image_setting_focus" : "image_setting")
                 }
