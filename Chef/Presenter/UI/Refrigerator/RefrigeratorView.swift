@@ -46,7 +46,6 @@ struct RefrigeratorView: View {
                 Spacer()
             }
             
-            // ドロップダウンメニューのオーバーレイ
             if isCategoryDropdownVisible {
                 
                 Color.black.opacity(0.001)
@@ -57,13 +56,9 @@ struct RefrigeratorView: View {
                         }
                     }
                 
-                CategoryDropdownView(
-                    selectedCategory: $selectedCategory,
-                    isVisible: $isCategoryDropdownVisible,
-                    categories: categories
-                )
-                .offset(x: 0, y: navigationBarHeight)
-                .transition(.opacity.combined(with: .opacity))
+                categoryDropdownView
+                    .offset(x: 0, y: navigationBarHeight)
+                    .transition(.opacity.combined(with: .opacity))
             }
         }
     }
@@ -152,50 +147,48 @@ struct RefrigeratorView: View {
             .padding()
         }
     }
-}
-
-struct CategoryDropdownView: View {
-    @Binding var selectedCategory: String
-    @Binding var isVisible: Bool
-    let categories: [String]
     
-    var body: some View {
-        VStack(spacing: 0) {
-            // 吹き出しの矢印部分
-            Triangle()
-                .fill(Color.mainYellow)
-                .frame(width: 30, height: 30)
-                .padding(.leading, 8)
-                .shadow(color: Color.gray.opacity(0.7), radius: 5, x: 0, y: 2)
-                .offset(x: -UIScreen.main.bounds.width / 2 + 40, y: 0)
-            
-            // カテゴリリスト部分
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(categories, id: \.self) { category in
-                    Button(action: {
-                        selectedCategory = category
-                        withAnimation {
-                            isVisible = false
+    private var categoryDropdownView: some View {
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                // 吹き出しの矢印部分
+                Triangle()
+                    .fill(Color.mainYellow)
+                    .frame(width: 30, height: 30)
+                    .padding(.leading, 8)
+                    .shadow(color: Color.gray.opacity(0.7), radius: 5, x: 0, y: 2)
+                    .offset(x: -UIScreen.main.bounds.width / 2 + 60, y: 0)
+                
+                // カテゴリリスト部分
+                VStack(alignment: .center, spacing: 0) {
+                    ForEach(categories, id: \.self) { category in
+                        Button(action: {
+                            selectedCategory = category
+                            withAnimation {
+                                isCategoryDropdownVisible = false
+                            }
+                        }) {
+                            Text(category)
+                                .foregroundColor(.black)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.white)
                         }
-                    }) {
-                        Text(category)
-                            .foregroundColor(.black)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.white)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    if category != categories.last {
-                        Divider()
-                            .background(Color.gray.opacity(0.3))
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        if category != categories.last {
+                            Divider()
+                                .background(Color.gray.opacity(0.3))
+                        }
                     }
                 }
+                .frame(width: geometry.size.width * 0.8)
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 2)
+                .padding(.horizontal, geometry.size.width * 0.1)
             }
-            .background(Color.white)
-            .cornerRadius(10)
-            .shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 2)
         }
     }
 }
