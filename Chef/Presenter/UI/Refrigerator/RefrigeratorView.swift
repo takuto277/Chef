@@ -36,6 +36,15 @@ struct RefrigeratorView: View {
         FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
         FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
         FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
         FoodItem(name: "ねぎ", count: 1, imageName: "green_onion", category: "野菜", description: "香り高いねぎ。"),
         FoodItem(name: "レモン", count: 5, imageName: "lemon", category: "果物", description: "ビタミン豊富なレモン。"),
         FoodItem(name: "白菜", count: 3, imageName: "cabbage", category: "野菜", description: "瑞々しい白菜。")
@@ -55,11 +64,9 @@ struct RefrigeratorView: View {
                 VStack {
                     navigationBarView
                     foodListView
-                    Spacer()
                 }
                 
                 if isCategoryDropdownVisible {
-                    
                     Color.black.opacity(0.001)
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
@@ -67,7 +74,6 @@ struct RefrigeratorView: View {
                                 isCategoryDropdownVisible = false
                             }
                         }
-                    
                     categoryDropdownView
                         .offset(x: 0, y: navigationBarHeight)
                         .transition(.opacity.combined(with: .opacity))
@@ -83,7 +89,6 @@ struct RefrigeratorView: View {
     private var navigationBarView: some View {
         GeometryReader { geometry in
             HStack {
-                // 左上のカテゴリ絞り込みボタン
                 Button(action: {
                     isCategoryDropdownVisible.toggle()
                 }) {
@@ -138,9 +143,6 @@ struct RefrigeratorView: View {
             .background(.green)
         }
         .frame(height: 60)
-        
-        
-        
     }
     
     private var foodListView: some View {
