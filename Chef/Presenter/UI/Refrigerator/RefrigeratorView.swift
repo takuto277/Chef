@@ -183,11 +183,11 @@ struct RefrigeratorView: View {
                         }
                     }
                 }
-                .frame(width: geometry.size.width * 0.8)
+                .frame(width: geometry.size.width * 0.95)
                 .background(Color.white)
                 .cornerRadius(10)
                 .shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 2)
-                .padding(.horizontal, geometry.size.width * 0.1)
+                .padding(.horizontal, geometry.size.width * 0.025)
             }
         }
     }
