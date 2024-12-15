@@ -9,10 +9,19 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var selectedTab = 0
+    
+    init() {
+        let appearance = UITabBarAppearance()
+        appearance.backgroundColor = .thinYellow
+        UITabBar.appearance().standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            RefrigeratorView()
+            RecipeView()
                 .tabItem {
                     Label("レシピ集", image: selectedTab == 0 ? "image_recipe_focus" : "image_recipe")
                 }
@@ -24,18 +33,19 @@ struct TabBarView: View {
                 }
                 .tag(1)
             
-            RefrigeratorView()
+            ShoppingListView()
                 .tabItem {
                     Label("買い物リスト", image: selectedTab == 2 ? "image_shoping_list_focus" : "image_shoping_list")
                 }
                 .tag(2)
             
-            RefrigeratorView()
+            SettingView()
                 .tabItem {
                     Label("設定", image: selectedTab == 3 ? "image_setting_focus" : "image_setting")
                 }
                 .tag(3)
         }
-        .accentColor(.tabBarFocus)
+        .accentColor(.mainYellow)
+        .background(.black)
     }
 }

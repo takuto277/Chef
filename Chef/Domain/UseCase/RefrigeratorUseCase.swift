@@ -1,5 +1,5 @@
 //
-//  HomeUseCase.swift
+//  RefrigeratorUseCase.swift
 //  Chef
 //
 //  Created by 小野拓人 on 2024/11/21.
@@ -7,13 +7,13 @@
 
 import Foundation
 
-internal protocol HomeUseCase {
+internal protocol RefrigeratorUseCase {
     func create(name: String, imageData: Data?, category: String, quantity: Int, expirationDate: String, memo: String) async throws
     func fetchAll() async throws -> [Food]
     func update(oldFood: Food) async throws
 }
 
-final class HomeUseCaseImpl: HomeUseCase {
+final class RefrigeratorUseCaseImpl: RefrigeratorUseCase {
     private let foodRepository: FoodRepository
     
     internal init(
