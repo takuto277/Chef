@@ -15,7 +15,7 @@ struct Foods {
 }
 
 struct RefrigeratorView: View {
-    @StateObject private var viewModel: RefrigeratorViewModel
+    private var viewModel: RefrigeratorViewModel
     
     let addFoodSubject = PassthroughSubject<Void, Never>()
     
@@ -78,8 +78,18 @@ struct RefrigeratorView: View {
             Button(action: {
                 // カテゴリ絞り込みのアクション
             }) {
-                Image(systemName: "line.horizontal.3.decrease.circle")
-                    .font(.title)
+                HStack(spacing: 8) {
+                     Text("野菜")
+                         .foregroundColor(.black)
+                         .font(.headline)
+                     Image(systemName: "chevron.down")
+                         .foregroundColor(.gray)
+                 }
+                 .padding(.horizontal, 12)
+                 .padding(.vertical, 8)
+                 .background(Color.white)
+                 .cornerRadius(20)
+                 .shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 2)
             }
             
             Spacer()
