@@ -45,7 +45,7 @@ struct TabBarView: View {
                 }
                 .tag(3)
         }
-        .accentColor(.tabBarFocus)
+        .accentColor(.mainYellow)
         .background(.black)
     }
 }

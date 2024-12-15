@@ -98,6 +98,7 @@ struct RefrigeratorView: View {
                 }) {
                     Image(systemName: "plus")
                         .font(.title)
+                        .foregroundColor(.mainYellow)
                 }
                 
                 Button(action: {
