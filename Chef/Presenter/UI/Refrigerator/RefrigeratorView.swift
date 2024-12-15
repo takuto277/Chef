@@ -115,7 +115,7 @@ struct RefrigeratorView: View {
                 }
             }
             .padding()
-            .background(.barBackground)
+            .background(.subYellow)
             .onAppear {
                 // GeometryReaderを使用して高さを取得
                 navigationBarHeight = geometry.size.height
@@ -184,7 +184,7 @@ struct RefrigeratorView: View {
                     }
                 }
                 .frame(width: geometry.size.width * 0.95)
-                .background(Color.white)
+                .background(.subYellow)
                 .cornerRadius(10)
                 .shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 2)
                 .padding(.horizontal, geometry.size.width * 0.025)

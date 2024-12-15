@@ -12,7 +12,7 @@ struct TabBarView: View {
     
     init() {
         let appearance = UITabBarAppearance()
-        appearance.backgroundColor = .barBackground
+        appearance.backgroundColor = .subYellow
         UITabBar.appearance().standardAppearance = appearance
         if #available(iOS 15.0, *) {
             UITabBar.appearance().scrollEdgeAppearance = appearance
