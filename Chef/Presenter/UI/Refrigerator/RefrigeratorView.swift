@@ -23,8 +23,7 @@ struct RefrigeratorView: View {
     
     init() {
         let useCase: RefrigeratorUseCase = RefrigeratorUseCaseImpl()
-        let viewModel: RefrigeratorViewModel = RefrigeratorViewModel(useCase: useCase)
-        _viewModel = StateObject(wrappedValue: viewModel)
+        viewModel = RefrigeratorViewModel(useCase: useCase)
         let input = RefrigeratorViewModel.Input(addFoodSubject: addFoodSubject.eraseToAnyPublisher())
         output = viewModel.subscribe(input: input)
     }
