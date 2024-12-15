@@ -8,10 +8,67 @@
 import SwiftUI
 import Combine
 
-// test用
-struct Foods {
-    let count: Int = 1
+struct FoodItem: Identifiable {
+    let id = UUID()
     let name: String
+    let count: Int
+    let imageName: String
+    let category: String
+    let description: String
+}
+
+// 食材セルのビュー
+struct FoodCellView: View {
+    let food: FoodItem
+
+    var body: some View {
+        VStack(alignment: .center, spacing: 5) {
+            VStack(alignment: .center) {
+                Text("購入から")
+                Text("\("24")日目")
+            }
+            .padding(2)
+            .font(.system(size: 10))
+            .frame(maxWidth: .infinity)
+            .background(.thinYellow)
+            .cornerRadius(30)
+            
+            ZStack(alignment: .bottomTrailing) {
+                Image("splashImage")
+                    .resizable()
+                    .scaledToFill()
+                    .clipShape(Circle())
+                    .shadow(radius: 5)
+                
+                HStack(alignment: .bottom) {
+                    Text("2")
+                        .font(.system(size: 15))
+                    Text("個")
+                        .font(.system(size: 10))
+                }
+                .padding(5)
+                .background(.mainYellow)
+                .foregroundColor(. black)
+                .cornerRadius(10)
+            }
+            
+            // 食材の名前
+            Text(food.name)
+                .padding(6)
+                .frame(maxWidth: .infinity)
+                .font(.system(size: 15))
+                .background(.thinYellow)
+                .foregroundColor(. black)
+                .cornerRadius(10)
+            
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 15)
+                .fill(.subYellow)
+                .shadow(color: Color.gray.opacity(0.2), radius: 5, x: 0, y: 2)
+        )
+    }
 }
 
 struct RefrigeratorView: View {
@@ -29,7 +86,13 @@ struct RefrigeratorView: View {
     }
     
     // test用
-    let arrayFoods = [Foods(name: "玉ねぎ"), Foods(name: "ねぎ"), Foods(name: "レモン"), Foods(name: "白菜")]
+    @State private var arrayFoods: [FoodItem] = [
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "ねぎ", count: 1, imageName: "green_onion", category: "野菜", description: "香り高いねぎ。"),
+        FoodItem(name: "レモン", count: 5, imageName: "lemon", category: "果物", description: "ビタミン豊富なレモン。"),
+        FoodItem(name: "白菜", count: 3, imageName: "cabbage", category: "野菜", description: "瑞々しい白菜。")
+    ]
+
     @State private var selectedCategory: String = "野菜"
     @State private var isCategoryDropdownVisible: Bool = false
     
@@ -39,6 +102,7 @@ struct RefrigeratorView: View {
     private let categories = ["野菜", "果物", "肉", "魚", "乳製品", "穀物ああああああああああああああ"]
     
     var body: some View {
+                NavigationView {
         ZStack(alignment: .topLeading) {
             VStack {
                 navigationBarView
@@ -61,6 +125,8 @@ struct RefrigeratorView: View {
                     .transition(.opacity.combined(with: .opacity))
             }
         }
+         .navigationBarHidden(true)
+    }
     }
     
     
@@ -131,17 +197,12 @@ struct RefrigeratorView: View {
     private var foodListView: some View {
         // 食材一覧コレクションビュー
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
-                ForEach(arrayFoods, id: \.name) { food in
-                    VStack {
-                        Text(food.name)
-                            .font(.headline)
-                        Text("\(food.count) 個")
-                            .font(.subheadline)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 20) {
+                ForEach(arrayFoods.filter { $0.category == selectedCategory }) { food in
+                    NavigationLink(destination: FoodDetailView()) {
+                        FoodCellView(food: food)
                     }
-                    .padding()
-                    .background(Color.blue.opacity(0.1))
-                    .cornerRadius(10)
+                    .buttonStyle(PlainButtonStyle()) // NavigationLinkのスタイルをカスタム
                 }
             }
             .padding()
