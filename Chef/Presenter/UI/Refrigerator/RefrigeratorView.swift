@@ -165,7 +165,6 @@ struct CategoryDropdownView: View {
             Triangle()
                 .fill(Color.mainYellow)
                 .frame(width: 30, height: 30)
-                .rotationEffect(Angle(degrees: 360))
                 .padding(.leading, 8)
                 .shadow(color: Color.gray.opacity(0.7), radius: 5, x: 0, y: 2)
                 .offset(x: -UIScreen.main.bounds.width / 2 + 40, y: 0)
