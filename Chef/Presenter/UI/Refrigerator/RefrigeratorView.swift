@@ -34,6 +34,8 @@ struct RefrigeratorView: View {
     // test用
     @State private var arrayFoods: [FoodItem] = [
         FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
+        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
         FoodItem(name: "ねぎ", count: 1, imageName: "green_onion", category: "野菜", description: "香り高いねぎ。"),
         FoodItem(name: "レモン", count: 5, imageName: "lemon", category: "果物", description: "ビタミン豊富なレモン。"),
         FoodItem(name: "白菜", count: 3, imageName: "cabbage", category: "野菜", description: "瑞々しい白菜。")
@@ -48,31 +50,32 @@ struct RefrigeratorView: View {
     private let categories = ["野菜", "果物", "肉", "魚", "乳製品", "穀物ああああああああああああああ"]
     
     var body: some View {
-                NavigationView {
-        ZStack(alignment: .topLeading) {
-            VStack {
-                navigationBarView
-                foodListView
-                Spacer()
-            }
-            
-            if isCategoryDropdownVisible {
+        NavigationView {
+            ZStack(alignment: .topLeading) {
+                VStack {
+                    navigationBarView
+                    foodListView
+                    Spacer()
+                }
                 
-                Color.black.opacity(0.001)
-                    .edgesIgnoringSafeArea(.all)
-                    .onTapGesture {
-                        withAnimation {
-                            isCategoryDropdownVisible = false
+                if isCategoryDropdownVisible {
+                    
+                    Color.black.opacity(0.001)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            withAnimation {
+                                isCategoryDropdownVisible = false
+                            }
                         }
-                    }
-                
-                categoryDropdownView
-                    .offset(x: 0, y: navigationBarHeight)
-                    .transition(.opacity.combined(with: .opacity))
+                    
+                    categoryDropdownView
+                        .offset(x: 0, y: navigationBarHeight)
+                        .transition(.opacity.combined(with: .opacity))
+                }
             }
+            .navigationBarHidden(true)
         }
-         .navigationBarHidden(true)
-    }
+        .navigationViewStyle(.stack)
     }
     
     
@@ -87,13 +90,13 @@ struct RefrigeratorView: View {
                     HStack(spacing: 8) {
                         Text(selectedCategory)
                             .foregroundColor(.black)
-                            .font(.headline)
+                            .font(.system(size: 15))
                         Image(systemName: isCategoryDropdownVisible ? "chevron.up" : "chevron.down")
                             .foregroundColor(.gray)
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    .background(Color.white)
+                    .background(.thinYellow)
                     .cornerRadius(20)
                     .shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 2)
                 }
@@ -141,14 +144,13 @@ struct RefrigeratorView: View {
     }
     
     private var foodListView: some View {
-        // 食材一覧コレクションビュー
         ScrollView {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 20) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 10) {
                 ForEach(arrayFoods.filter { $0.category == selectedCategory }) { food in
                     NavigationLink(destination: FoodDetailView()) {
                         FoodCellView(food: food)
                     }
-                    .buttonStyle(PlainButtonStyle()) // NavigationLinkのスタイルをカスタム
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
             .padding()
