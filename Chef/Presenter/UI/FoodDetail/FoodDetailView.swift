@@ -13,34 +13,49 @@ enum Filde {
 }
 
 struct FoodDetailView: View {
-    @State var hoge: String = ""
+    @State var email: String = ""
+    @State var address: String = ""
     @FocusState var focus: Filde?
-    @State var width: CGFloat = 0
-    @State var anim: CGFloat = 0
+    @State var emailWidth: CGFloat = 0
+    @State var emailAnim: CGFloat = 0
+    @State var addressWidth: CGFloat = 0
+    @State var addressAnim: CGFloat = 0
     var body: some View {
         VStack {
-            TextField("", text: $hoge)
+            TextField("", text: $email)
                 .padding()
-                .textFStyle(width: width, text: "Email", anim: anim)
+                .textFStyle(width: emailWidth, text: "Email", anim: emailAnim)
                 .focused($focus, equals: .hoge)
-            TextField("", text: $hoge)
+            TextField("", text: $address)
                 .padding()
-                .textFStyle(width: width, text: "Email", anim: anim)
+                .textFStyle(width: addressWidth, text: "MailAddress", anim: addressAnim)
                 .focused($focus, equals: .huga)
         }
-            .onChange(of: focus) { oldValue, newValue in
-                if hoge.isEmpty {
-                    withAnimation(.spring()) {
-                        if newValue == .hoge {
-                            anim = -30
-                            width = 60
-                        } else {
-                            anim = 0
-                            width = 0
-                        }
+        .onChange(of: focus) { oldValue, newValue in
+            if email.isEmpty {
+                withAnimation(.spring()) {
+                    if newValue == .hoge {
+                        emailAnim = -30
+                        emailWidth = 60
+                    } else {
+                        emailAnim = 0
+                        emailWidth = 0
                     }
                 }
             }
+            
+            if address.isEmpty {
+                withAnimation(.spring()) {
+                    if newValue == .huga {
+                        addressAnim = -30
+                        addressWidth = 120
+                    } else {
+                        addressAnim = 0
+                        addressWidth = 0
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -59,7 +74,7 @@ struct TextFStyle: ViewModifier {
                             .frame(width: width, height: 27)
                             .padding(.leading, 12)
                             .foregroundColor(.gray)
-                        Text("Email").bold()
+                        Text(text).bold()
                             .padding(.leading, 20)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
