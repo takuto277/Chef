@@ -5,56 +5,43 @@
 //  Created by 小野拓人 on 2024/12/15.
 //
 
+import Combine
 import SwiftUI
 
-enum Filde {
-    case hoge
-    case huga
-}
-
 struct FoodDetailView: View {
-    @State var email: String = ""
-    @State var address: String = ""
-    @FocusState var focus: Filde?
-    @State var emailWidth: CGFloat = 0
-    @State var emailAnim: CGFloat = 0
-    @State var addressWidth: CGFloat = 0
-    @State var addressAnim: CGFloat = 0
+    @StateObject private var viewModel: FoodDetailViewModel
+    @FocusState private var focus: FieldType?
+    
+    @ObservedObject private var output: FoodDetailViewModel.Output
+    let focusTextField = PassthroughSubject<(FieldType?, FieldType?), Never>()
+    let updateField = PassthroughSubject<(FieldType, String), Never>()
+    
+    init() {
+        let viewModel = FoodDetailViewModel()
+        _viewModel = StateObject(wrappedValue: viewModel)
+        let input = FoodDetailViewModel.Input(
+            focusTextField: focusTextField.eraseToAnyPublisher(),
+            updateField: updateField.eraseToAnyPublisher()
+        )
+        output = viewModel.subscribe(input: input)
+    }
+
     var body: some View {
         VStack {
-            TextField("", text: $email)
+            ForEach(output.fields, id: \.type) { field in
+                TextField("", text: Binding(
+                    get: { field.name },
+                    set: { newValue in
+                        updateField.send((field.type, newValue))
+                    }
+                ))
                 .padding()
-                .textFStyle(width: emailWidth, text: "Email", anim: emailAnim)
-                .focused($focus, equals: .hoge)
-            TextField("", text: $address)
-                .padding()
-                .textFStyle(width: addressWidth, text: "MailAddress", anim: addressAnim)
-                .focused($focus, equals: .huga)
+                .textFStyle(width: field.width, text: field.type.title, anim: field.animation)
+                .focused($focus, equals: field.type)
+            }
         }
         .onChange(of: focus) { oldValue, newValue in
-            if email.isEmpty {
-                withAnimation(.spring()) {
-                    if newValue == .hoge {
-                        emailAnim = -30
-                        emailWidth = 60
-                    } else {
-                        emailAnim = 0
-                        emailWidth = 0
-                    }
-                }
-            }
-            
-            if address.isEmpty {
-                withAnimation(.spring()) {
-                    if newValue == .huga {
-                        addressAnim = -30
-                        addressWidth = 120
-                    } else {
-                        addressAnim = 0
-                        addressWidth = 0
-                    }
-                }
-            }
+            focusTextField.send((oldValue, newValue))
         }
     }
 }
