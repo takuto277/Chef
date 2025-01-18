@@ -13,7 +13,7 @@ struct FoodDetailView: View {
     @FocusState private var focus: FieldType?
     
     @ObservedObject private var output: FoodDetailViewModel.Output
-    let focusTextField = PassthroughSubject<(FieldType?, FieldType?), Never>()
+    let focusTextField = PassthroughSubject<(FieldType?), Never>()
     let updateField = PassthroughSubject<(FieldType, String), Never>()
     
     init() {
@@ -36,12 +36,21 @@ struct FoodDetailView: View {
                     }
                 ))
                 .padding()
-                .textFStyle(width: field.width, text: field.type.title, anim: field.animation)
+                .textFStyle(
+                    width: output.fieldType.getWidth(fieldType: field.type, title: field.name),
+                    text: field.type.title,
+                    anim: output.fieldType.getAnimation(fieldType: field.type, title: field.name)
+                )
                 .focused($focus, equals: field.type)
             }
         }
-        .onChange(of: focus) { oldValue, newValue in
-            focusTextField.send((oldValue, newValue))
+        .onChange(of: focus) { _, newValue in
+            focusTextField.send(newValue)
+        }
+        .onReceive(output.$keyboardVisible) { isVisible in
+            if !isVisible {
+                focusTextField.send(FieldType.none)
+            }
         }
     }
 }
