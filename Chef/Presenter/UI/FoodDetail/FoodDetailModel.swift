@@ -7,9 +7,26 @@
 
 import SwiftUI
 
+internal enum FieldSessionType: Hashable {
+    case titleImage(titleField: FieldType, imageName: String)
+    case category(FieldType)
+    case expiration(expirationField: FieldType, count: Int)
+    case memo(memoField: FieldType)
+    
+    static var allInitialCases: [FieldSessionType] {
+        return [
+            .titleImage(titleField: .title, imageName: ""),
+            .category(.category),
+            .expiration(expirationField: .expiration, count: 30),
+            .memo(memoField: .memo)
+        ]
+    }
+}
+
 internal enum FieldType: CaseIterable {
-    case email
-    case address
+    case title
+    case category
+    case expiration
     case memo
     case none
 
@@ -17,12 +34,14 @@ internal enum FieldType: CaseIterable {
 
     var title: String {
         switch self {
-        case .email:
-            return "Email"
-        case .address:
-            return "Address"
+        case .title:
+            return "タイトル"
+        case .category:
+            return "カテゴリー"
+        case .expiration:
+            return "賞味期限"
         case .memo:
-            return "Memo"
+            return "メモ"
         case .none:
             assertionFailure("想定外")
             return ""
@@ -31,7 +50,7 @@ internal enum FieldType: CaseIterable {
     
     var animation: CGFloat {
         switch self {
-        case .email, .address, .memo:
+        case .title, .category, .expiration, .memo:
             return -30
         case .none:
             assertionFailure("想定外")
@@ -41,9 +60,9 @@ internal enum FieldType: CaseIterable {
     
     var width: CGFloat {
         switch self {
-        case .email, .memo:
+        case .title, .memo:
             return 60
-        case .address:
+        case .category, .expiration:
             return 120
         case .none:
             assertionFailure("想定外")
@@ -51,7 +70,8 @@ internal enum FieldType: CaseIterable {
         }
     }
     
-    func getAnimation(fieldType: FieldType, title: String) -> CGFloat {
+    func getAnimation(fieldType: FieldType?, title: String?) -> CGFloat {
+        guard let fieldType = fieldType, let title = title else { return 0 }
         if fieldType == self {
             return fieldType.animation
         } else if title.isEmpty {
@@ -61,7 +81,8 @@ internal enum FieldType: CaseIterable {
         }
     }
     
-    func getWidth(fieldType: FieldType, title: String) -> CGFloat {
+    func getWidth(fieldType: FieldType?, title: String?) -> CGFloat {
+        guard let fieldType = fieldType, let title = title else { return 0 }
         if fieldType == self {
             return fieldType.width
         } else if title.isEmpty {
