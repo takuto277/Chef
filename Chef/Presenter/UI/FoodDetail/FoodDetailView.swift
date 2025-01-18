@@ -14,7 +14,7 @@ struct FoodDetailView: View {
     
     @ObservedObject private var output: FoodDetailViewModel.Output
     let focusTextField = PassthroughSubject<(FieldType?), Never>()
-    let updateField = PassthroughSubject<(FieldType, String), Never>()
+    let updateField = PassthroughSubject<(FieldType?, String), Never>()
     
     init() {
         let viewModel = FoodDetailViewModel()
@@ -25,24 +25,14 @@ struct FoodDetailView: View {
         )
         output = viewModel.subscribe(input: input)
     }
-
+    
     var body: some View {
+        inputContents
+    }
+    
+    private var inputContents: some View {
         VStack {
-            ForEach(output.fields, id: \.type) { field in
-                TextField("", text: Binding(
-                    get: { field.name },
-                    set: { newValue in
-                        updateField.send((field.type, newValue))
-                    }
-                ))
-                .padding()
-                .textFStyle(
-                    width: output.fieldType.getWidth(fieldType: field.type, title: field.name),
-                    text: field.type.title,
-                    anim: output.fieldType.getAnimation(fieldType: field.type, title: field.name)
-                )
-                .focused($focus, equals: field.type)
-            }
+            displayEachSession
         }
         .onChange(of: focus) { _, newValue in
             focusTextField.send(newValue)
@@ -53,11 +43,96 @@ struct FoodDetailView: View {
             }
         }
     }
+    
+    private var displayEachSession: some View {
+        ForEach(output.fieldSessionTypes, id: \.self) { session in
+            switch session {
+            case let .titleImage(titleField: titleFieldType, imageName: imageName):
+                HStack {
+                    let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
+                        field.type == titleFieldType
+                    }
+                    TextField("", text: Binding(
+                        get: { fieldState?.name ?? "想定外" },
+                        set: { newValue in
+                            updateField.send((fieldState?.type, newValue))
+                        }
+                    ))
+                    .padding()
+                    .textFStyle(
+                        width: output.fieldType.getWidth(fieldType: fieldState?.type, title: fieldState?.name),
+                        text: fieldState?.type.title,
+                        anim: output.fieldType.getAnimation(fieldType: fieldState?.type, title: fieldState?.name)
+                    )
+                    .focused($focus, equals: fieldState?.type)
+                    
+                    Image(systemName: "photo")
+                    
+                }
+            case let .category(categoryFieldType):
+                let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
+                    field.type == categoryFieldType
+                }
+                TextField("", text: Binding(
+                    get: { fieldState?.name ?? "想定外" },
+                    set: { newValue in
+                        updateField.send((fieldState?.type, newValue))
+                    }
+                ))
+                .padding()
+                .textFStyle(
+                    width: output.fieldType.getWidth(fieldType: fieldState?.type, title: fieldState?.name),
+                    text: fieldState?.type.title,
+                    anim: output.fieldType.getAnimation(fieldType: fieldState?.type, title: fieldState?.name)
+                )
+                .focused($focus, equals: fieldState?.type)
+            case let .expiration(expirationField: expirationFieldType, count: count):
+                HStack {
+                    let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
+                        field.type == expirationFieldType
+                    }
+                    TextField("", text: Binding(
+                        get: { fieldState?.name ?? "想定外" },
+                        set: { newValue in
+                            updateField.send((fieldState?.type, newValue))
+                        }
+                    ))
+                    .padding()
+                    .textFStyle(
+                        width: output.fieldType.getWidth(fieldType: fieldState?.type, title: fieldState?.name),
+                        text: fieldState?.type.title,
+                        anim: output.fieldType.getAnimation(fieldType: fieldState?.type, title: fieldState?.name)
+                    )
+                    .focused($focus, equals: fieldState?.type)
+                    
+                    Text("55555")
+                }
+            case let .memo(memoField: memoFieldType):
+                let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
+                    field.type == memoFieldType
+                }
+                TextField("", text: Binding(
+                    get: { fieldState?.name ?? "想定外" },
+                    set: { newValue in
+                        updateField.send((fieldState?.type, newValue))
+                    }
+                ))
+                .padding()
+                .textFStyle(
+                    width: output.fieldType.getWidth(fieldType: fieldState?.type, title: fieldState?.name),
+                    text: fieldState?.type.title,
+                    anim: output.fieldType.getAnimation(fieldType: fieldState?.type, title: fieldState?.name)
+                )
+                .focused($focus, equals: fieldState?.type)
+                .frame(height: 500)
+            }
+        }
+    }
 }
 
 struct TextFStyle: ViewModifier {
     var width: CGFloat
-    var text: String
+    var text: String?
     var anim: CGFloat
     func body(content: Content) -> some View {
         content
@@ -70,7 +145,7 @@ struct TextFStyle: ViewModifier {
                             .frame(width: width, height: 27)
                             .padding(.leading, 12)
                             .foregroundColor(.gray)
-                        Text(text).bold()
+                        Text(text ?? "想定外").bold()
                             .padding(.leading, 20)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -87,7 +162,7 @@ struct FoodDetailView_Previews: PreviewProvider {
 }
 
 extension View {
-    func textFStyle(width: CGFloat, text: String, anim: CGFloat) -> some View {
+    func textFStyle(width: CGFloat, text: String?, anim: CGFloat) -> some View {
         modifier(TextFStyle(width: width, text: text, anim: anim))
     }
 }

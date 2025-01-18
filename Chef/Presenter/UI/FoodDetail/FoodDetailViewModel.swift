@@ -11,7 +11,7 @@ import Combine
 extension FoodDetailViewModel {
     struct Input {
         let focusTextField: AnyPublisher<(FieldType?), Never>
-        let updateField: AnyPublisher<(FieldType, String), Never>
+        let updateField: AnyPublisher<(FieldType?, String), Never>
     }
 
     class FieldState: ObservableObject, Identifiable {
@@ -26,8 +26,9 @@ extension FoodDetailViewModel {
     }
 
     internal class Output: ObservableObject {
+        @Published var fieldSessionTypes: [FieldSessionType] = []
         @Published var fields: [FieldState] = []
-        @Published var fieldType: FieldType = .address
+        @Published var fieldType: FieldType = .none
         @Published var keyboardVisible = false
     }
 }
@@ -38,7 +39,7 @@ internal final class FoodDetailViewModel: ObservableObject {
     private let keyboardMonitor: KeyboardMonitor
     
     init() {
-        
+        output.fieldSessionTypes = FieldSessionType.allInitialCases
         output.fields = FieldType.allCases
             .filter { !$0.isNone }
             .map { FieldState(type: $0) }
@@ -53,7 +54,7 @@ internal final class FoodDetailViewModel: ObservableObject {
     internal func subscribe(input: Input) -> Output {
         input.updateField
             .sink { [weak self] type, text in
-                guard let self else { return }
+                guard let self, let type = type else { return }
                 self.updateField(type, with: text)
             }
             .store(in: &cancellables)
@@ -78,7 +79,7 @@ private extension FieldType {
         switch self {
         case .none:
             return true
-        case .email, .address, .memo:
+        case .title, .category, .expiration, .memo:
             return false
         }
     }
