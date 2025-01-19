@@ -31,15 +31,17 @@ struct FoodDetailView: View {
     }
     
     private var inputContents: some View {
-        VStack {
-            displayEachSession
-        }
-        .onChange(of: focus) { _, newValue in
-            focusTextField.send(newValue)
-        }
-        .onReceive(output.$keyboardVisible) { isVisible in
-            if !isVisible {
-                focusTextField.send(FieldType.none)
+        ScrollView {
+            VStack {
+                displayEachSession
+            }
+            .onChange(of: focus) { _, newValue in
+                focusTextField.send(newValue)
+            }
+            .onReceive(output.$keyboardVisible) { isVisible in
+                if !isVisible {
+                    focusTextField.send(FieldType.none)
+                }
             }
         }
     }
@@ -59,6 +61,7 @@ struct FoodDetailView: View {
                         }
                     ))
                     .padding()
+                    .frame(height: 100)
                     .textFStyle(
                         width: output.fieldType.getWidth(fieldType: fieldState?.type, title: fieldState?.name),
                         text: fieldState?.type.title,
@@ -67,8 +70,13 @@ struct FoodDetailView: View {
                     .focused($focus, equals: fieldState?.type)
                     
                     Image(systemName: "photo")
-                    
+                        .frame(width: 150, height: 150)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.blue, lineWidth: 3)
+                        )
                 }
+                .padding()
             case let .category(categoryFieldType):
                 let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
                     field.type == categoryFieldType

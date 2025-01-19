@@ -50,7 +50,9 @@ internal enum FieldType: CaseIterable {
     
     var animation: CGFloat {
         switch self {
-        case .title, .category, .expiration, .memo:
+        case .title:
+            return -50
+        case .category, .expiration, .memo:
             return -30
         case .none:
             assertionFailure("想定外")
@@ -60,7 +62,9 @@ internal enum FieldType: CaseIterable {
     
     var width: CGFloat {
         switch self {
-        case .title, .memo:
+        case .title:
+            return 90
+        case .memo:
             return 60
         case .category, .expiration:
             return 120
