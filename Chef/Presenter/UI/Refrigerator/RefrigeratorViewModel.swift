@@ -11,6 +11,7 @@ import Combine
 extension RefrigeratorViewModel {
     struct Input {
         let addFoodSubject: AnyPublisher<Void, Never>
+        let buttonType: AnyPublisher<RefrigeratorButtonType, Never>
     }
     
     class Output: ObservableObject {
@@ -51,6 +52,21 @@ internal class RefrigeratorViewModel: ObservableObject {
                      //       try? await self.useCase.update(oldFood: i)
                             print("\(i.name):\(i.id)")
                         }
+                    }
+                }
+            }
+            .store(in: &cancellables)
+        input.buttonType
+            .sink { [weak self] type in
+                guard let self else { return }
+                Task {
+                    switch type {
+                    case .search:
+                        break
+                    case .plus:
+                        break
+                    case .menu:
+                        break
                     }
                 }
             }

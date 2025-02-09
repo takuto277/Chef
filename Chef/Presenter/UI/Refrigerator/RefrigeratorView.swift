@@ -21,13 +21,17 @@ struct RefrigeratorView: View {
     private var viewModel: RefrigeratorViewModel
     
     let addFoodSubject = PassthroughSubject<Void, Never>()
+    let buttonType = PassthroughSubject<RefrigeratorButtonType, Never>()
     
     @ObservedObject private var output: RefrigeratorViewModel.Output
     
     init() {
         let useCase: RefrigeratorUseCase = RefrigeratorUseCaseImpl()
         viewModel = RefrigeratorViewModel(useCase: useCase)
-        let input = RefrigeratorViewModel.Input(addFoodSubject: addFoodSubject.eraseToAnyPublisher())
+        let input = RefrigeratorViewModel.Input(
+            addFoodSubject: addFoodSubject.eraseToAnyPublisher(),
+            buttonType: buttonType.eraseToAnyPublisher()
+        )
         output = viewModel.subscribe(input: input)
     }
     
@@ -110,7 +114,7 @@ struct RefrigeratorView: View {
                 
                 HStack(spacing: 20) {
                     Button(action: {
-                        // 検索アクション
+                        buttonType.send(.search)
                     }) {
                         Image(systemName: "magnifyingglass")
                             .font(.title)
@@ -118,7 +122,7 @@ struct RefrigeratorView: View {
                     }
                     
                     Button(action: {
-                        // 食材を追加するアクション
+                        buttonType.send(.plus)
                     }) {
                         Image(systemName: "plus")
                             .font(.title)
@@ -126,7 +130,7 @@ struct RefrigeratorView: View {
                     }
                     
                     Button(action: {
-                        // メニューを開くアクション
+                        buttonType.send(.menu)
                     }) {
                         Image(systemName: "line.horizontal.3")
                             .font(.title)
