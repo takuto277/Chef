@@ -12,3 +12,7 @@ enum RefrigeratorButtonType {
     case plus
     case menu
 }
+
+enum RefrigeratorNavigationType {
+    case foodDetail
+}

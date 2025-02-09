@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 extension RefrigeratorViewModel {
     struct Input {
@@ -17,6 +18,7 @@ extension RefrigeratorViewModel {
     class Output: ObservableObject {
         @Published var foodName: String = ""
         @Published var foodCalories: String = ""
+        @Published var navigationPath = NavigationPath()
     }
 }
 
@@ -26,7 +28,9 @@ internal class RefrigeratorViewModel: ObservableObject {
     var output = Output()
     
     
-    init(useCase: RefrigeratorUseCase) {
+    init(
+        useCase: RefrigeratorUseCase
+    ) {
         self.useCase = useCase
     }
     
@@ -64,7 +68,7 @@ internal class RefrigeratorViewModel: ObservableObject {
                     case .search:
                         break
                     case .plus:
-                        break
+                        self.output.navigationPath.append(RefrigeratorNavigationType.foodDetail)
                     case .menu:
                         break
                     }

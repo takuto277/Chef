@@ -27,7 +27,9 @@ struct RefrigeratorView: View {
     
     init() {
         let useCase: RefrigeratorUseCase = RefrigeratorUseCaseImpl()
-        viewModel = RefrigeratorViewModel(useCase: useCase)
+        viewModel = RefrigeratorViewModel(
+            useCase: useCase
+        )
         let input = RefrigeratorViewModel.Input(
             addFoodSubject: addFoodSubject.eraseToAnyPublisher(),
             buttonType: buttonType.eraseToAnyPublisher()
@@ -63,7 +65,7 @@ struct RefrigeratorView: View {
     private let categories = ["野菜", "果物", "肉", "魚", "乳製品", "穀物ああああああああああああああ"]
     
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $output.navigationPath) {
             ZStack(alignment: .topLeading) {
                 VStack {
                     navigationBarView
@@ -84,6 +86,12 @@ struct RefrigeratorView: View {
                 }
             }
             .navigationBarHidden(true)
+            .navigationDestination(for: RefrigeratorNavigationType.self) { type in
+                switch type {
+                case .foodDetail:
+                    FoodDetailView()
+                }
+            }
         }
         .navigationViewStyle(.stack)
     }
