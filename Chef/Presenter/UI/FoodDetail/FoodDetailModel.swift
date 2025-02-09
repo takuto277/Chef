@@ -61,17 +61,8 @@ internal enum FieldType: CaseIterable {
     }
     
     var width: CGFloat {
-        switch self {
-        case .title:
-            return 90
-        case .memo:
-            return 60
-        case .category, .expiration:
-            return 120
-        case .none:
-            assertionFailure("想定外")
-            return 0
-        }
+        let fieldFont: UIFont = UIFont.systemFont(ofSize: 17, weight: .bold)
+        return title.width(usingFont: fieldFont) + 15
     }
     
     func getAnimation(fieldType: FieldType?, title: String?) -> CGFloat {

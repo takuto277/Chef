@@ -94,7 +94,7 @@ struct FoodDetailView: View {
                     anim: output.fieldType.getAnimation(fieldType: fieldState?.type, title: fieldState?.name)
                 )
                 .focused($focus, equals: fieldState?.type)
-            case let .expiration(expirationField: expirationFieldType, count: count):
+            case let .expiration(expirationField: expirationFieldType, count: _):
                 HStack {
                     let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
                         field.type == expirationFieldType
