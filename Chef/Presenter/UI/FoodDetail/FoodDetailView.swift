@@ -172,5 +172,6 @@ struct FoodDetailView_Previews: PreviewProvider {
 extension View {
     func textFStyle(width: CGFloat, text: String?, anim: CGFloat) -> some View {
         modifier(TextFStyle(width: width, text: text, anim: anim))
+            .animation(.spring, value: anim)
     }
 }
