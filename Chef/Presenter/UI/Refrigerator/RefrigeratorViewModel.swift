@@ -40,7 +40,7 @@ internal class RefrigeratorViewModel: ObservableObject {
                 guard let self else { return }
                 Task {
                     // テスト確認用 ゴミだからいつ消してもらっても構わない
-                    try? await self.useCase.create(name: "これは更新前", imageData: nil, category: "", quantity: 1, expirationDate: "", memo: "")
+                    try? await self.useCase.create(name: "これは更新前", imageUrl: nil, category: "", quantity: 1, expirationDate: "", memo: "")
                     let hoge = try? await self.useCase.fetchAll()
                     hoge?.forEach { i in
                         Task {

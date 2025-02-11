@@ -16,8 +16,9 @@ struct FoodDetailView: View {
     let focusTextField = PassthroughSubject<(FieldType?), Never>()
     let updateField = PassthroughSubject<(FieldType?, String), Never>()
     
-    init() {
+    init(initialFoodDetail: Food?) {
         let viewModel = FoodDetailViewModel()
+        viewModel.setup(initialFoodDetail: initialFoodDetail)
         _viewModel = StateObject(wrappedValue: viewModel)
         let input = FoodDetailViewModel.Input(
             focusTextField: focusTextField.eraseToAnyPublisher(),
@@ -49,7 +50,7 @@ struct FoodDetailView: View {
     private var displayEachSession: some View {
         ForEach(output.fieldSessionTypes, id: \.self) { session in
             switch session {
-            case let .titleImage(titleField: titleFieldType, imageName: imageName):
+            case let .nameAndImage(titleField: titleFieldType, imageName: imageName):
                 HStack {
                     let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
                         field.type == titleFieldType
@@ -94,7 +95,7 @@ struct FoodDetailView: View {
                     anim: output.fieldType.getAnimation(fieldType: fieldState?.type, title: fieldState?.name)
                 )
                 .focused($focus, equals: fieldState?.type)
-            case let .expiration(expirationField: expirationFieldType, count: _):
+            case let .expiration(expirationField: expirationFieldType, quantity: quantity):
                 HStack {
                     let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
                         field.type == expirationFieldType
@@ -113,7 +114,7 @@ struct FoodDetailView: View {
                     )
                     .focused($focus, equals: fieldState?.type)
                     
-                    Text("55555")
+                    Text(String(quantity))
                 }
             case let .memo(memoField: memoFieldType):
                 let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
@@ -165,7 +166,7 @@ struct TextFStyle: ViewModifier {
 
 struct FoodDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        FoodDetailView()
+        FoodDetailView(initialFoodDetail: nil)
     }
 }
 

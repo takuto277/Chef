@@ -39,10 +39,6 @@ internal final class FoodDetailViewModel: ObservableObject {
     private let keyboardMonitor: KeyboardMonitor
     
     init() {
-        output.fieldSessionTypes = FieldSessionType.allInitialCases
-        output.fields = FieldType.allCases
-            .filter { !$0.isNone }
-            .map { FieldState(type: $0) }
         keyboardMonitor = KeyboardMonitor.shared
         
         keyboardMonitor.$isKeyboardVisible
@@ -79,7 +75,7 @@ private extension FieldType {
         switch self {
         case .none:
             return true
-        case .title, .category, .expiration, .memo:
+        case .name, .category, .expiration, .memo:
             return false
         }
     }

@@ -8,23 +8,23 @@
 import SwiftUI
 
 internal enum FieldSessionType: Hashable {
-    case titleImage(titleField: FieldType, imageName: String)
+    case nameAndImage(titleField: FieldType, imageName: String)
     case category(FieldType)
-    case expiration(expirationField: FieldType, count: Int)
+    case expiration(expirationField: FieldType, quantity: Int)
     case memo(memoField: FieldType)
     
-    static var allInitialCases: [FieldSessionType] {
+    static func allInitialCases(imageUrl: String?, quantity: Int = 0) -> [FieldSessionType] {
         return [
-            .titleImage(titleField: .title, imageName: ""),
+            .nameAndImage(titleField: .name, imageName: imageUrl ?? ""),
             .category(.category),
-            .expiration(expirationField: .expiration, count: 30),
+            .expiration(expirationField: .expiration, quantity: quantity),
             .memo(memoField: .memo)
         ]
     }
 }
 
 internal enum FieldType: CaseIterable {
-    case title
+    case name
     case category
     case expiration
     case memo
@@ -34,7 +34,7 @@ internal enum FieldType: CaseIterable {
 
     var title: String {
         switch self {
-        case .title:
+        case .name:
             return "食材名"
         case .category:
             return "カテゴリー"
@@ -50,7 +50,7 @@ internal enum FieldType: CaseIterable {
     
     var animation: CGFloat {
         switch self {
-        case .title:
+        case .name:
             return -50
         case .category, .expiration, .memo:
             return -30
