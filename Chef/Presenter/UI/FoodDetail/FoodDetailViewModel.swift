@@ -33,6 +33,7 @@ extension FoodDetailViewModel {
     }
 }
 
+@MainActor
 internal final class FoodDetailViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var output = Output()

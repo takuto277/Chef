@@ -19,9 +19,11 @@ extension RefrigeratorViewModel {
         @Published var foodName: String = ""
         @Published var foodCalories: String = ""
         @Published var navigationPath = NavigationPath()
+        @Published var foods: [Food] = []
     }
 }
 
+@MainActor
 internal class RefrigeratorViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let useCase: RefrigeratorUseCase
@@ -32,6 +34,18 @@ internal class RefrigeratorViewModel: ObservableObject {
         useCase: RefrigeratorUseCase
     ) {
         self.useCase = useCase
+        Task {
+            await fetchAllFoods()
+        }
+    }
+    
+    private func fetchAllFoods() async {
+        do {
+            output.foods = try await useCase.fetchAll()
+        } catch {
+            // TODO: アラートの表示
+            print("食べ物の取得に失敗しました: \(error)")
+        }
     }
     
     internal func subscribe(input: Input) -> Output {

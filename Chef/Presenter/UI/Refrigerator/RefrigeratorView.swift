@@ -89,7 +89,7 @@ struct RefrigeratorView: View {
             .navigationDestination(for: RefrigeratorNavigationType.self) { type in
                 switch type {
                 case .foodDetail:
-                    FoodDetailView()
+                    FoodDetailView(initialFoodDetail: nil)
                 }
             }
         }
@@ -160,8 +160,8 @@ struct RefrigeratorView: View {
     private var foodListView: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 10) {
-                ForEach(arrayFoods.filter { $0.category == selectedCategory }) { food in
-                    NavigationLink(destination: FoodDetailView()) {
+                ForEach(output.foods.filter { $0.category == selectedCategory }) { food in
+                    NavigationLink(destination: FoodDetailView(initialFoodDetail: food)) {
                         FoodCellView(food: food)
                     }
                     .buttonStyle(PlainButtonStyle())
