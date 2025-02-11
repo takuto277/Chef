@@ -45,7 +45,24 @@ internal final class FoodDetailViewModel: ObservableObject {
             .receive(on: RunLoop.main)
             .assign(to: \.keyboardVisible, on: output)
             .store(in: &cancellables)
+    }
+    
+    internal func setup(initialFoodDetail: Food?) {
+        if let food = initialFoodDetail {
+            output.fieldSessionTypes = FieldSessionType.allInitialCases(imageUrl: food.imageUrl, quantity: food.quantity)
+            output.fields = [
+                FieldState(type: .name, name: food.name),
+                FieldState(type: .category, name: food.category),
+                FieldState(type: .expiration, name: food.expirationDate),
+                FieldState(type: .memo, name: food.memo)
+            ]
+        } else {
+            output.fieldSessionTypes = FieldSessionType.allInitialCases(imageUrl: nil)
+            output.fields = FieldType.allCases
+                        .filter { !$0.isNone }
+                        .map { FieldState(type: $0) }
         }
+    }
     
     internal func subscribe(input: Input) -> Output {
         input.updateField
