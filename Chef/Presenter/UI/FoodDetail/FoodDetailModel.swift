@@ -35,11 +35,11 @@ internal enum FieldType: CaseIterable {
     var title: String {
         switch self {
         case .title:
-            return "タイトル"
+            return "食材名"
         case .category:
             return "カテゴリー"
         case .expiration:
-            return "賞味期限"
+            return "購入日"
         case .memo:
             return "メモ"
         case .none:
