@@ -15,6 +15,11 @@ struct FoodDetailView: View {
     @ObservedObject private var output: FoodDetailViewModel.Output
     let focusTextField = PassthroughSubject<(FieldType?), Never>()
     let updateField = PassthroughSubject<(FieldType?, String), Never>()
+    let imageTapped = PassthroughSubject<Void, Never>()
+    let showImagePicker = PassthroughSubject<Void, Never>()
+    let selectedImage = PassthroughSubject<UIImage, Never>()
+    
+    @State private var selectedUIImage: UIImage?
     
     init(initialFoodDetail: Food?) {
         let viewModel = FoodDetailViewModel()
@@ -22,13 +27,34 @@ struct FoodDetailView: View {
         _viewModel = StateObject(wrappedValue: viewModel)
         let input = FoodDetailViewModel.Input(
             focusTextField: focusTextField.eraseToAnyPublisher(),
-            updateField: updateField.eraseToAnyPublisher()
+            updateField: updateField.eraseToAnyPublisher(),
+            imageTapped: imageTapped.eraseToAnyPublisher(),
+            showImagePicker: showImagePicker.eraseToAnyPublisher(),
+            selectedImage: selectedImage.eraseToAnyPublisher()
         )
         output = viewModel.subscribe(input: input)
     }
     
     var body: some View {
         inputContents
+            .sheet(isPresented: $output.showImagePicker) {
+                ImagePicker(image: $selectedUIImage)
+            }
+            .alert(isPresented: $output.showAlert) {
+                Alert(
+                    title: Text("画像を選択"),
+                    message: Text("画像をフォトライブラリから選択しますか？"),
+                    primaryButton: .default(Text("はい")) {
+                        showImagePicker.send()
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
+            .onChange(of: selectedUIImage) { _, newImage in
+                if let uiImage = newImage {
+                    selectedImage.send(uiImage)
+                }
+            }
     }
     
     private var inputContents: some View {
@@ -50,7 +76,7 @@ struct FoodDetailView: View {
     private var displayEachSession: some View {
         ForEach(output.fieldSessionTypes, id: \.self) { session in
             switch session {
-            case let .nameAndImage(titleField: titleFieldType, imageName: imageName):
+            case let .nameAndImage(titleField: titleFieldType, imageUrl: imageUrl):
                 HStack {
                     let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
                         field.type == titleFieldType
@@ -69,13 +95,28 @@ struct FoodDetailView: View {
                         anim: output.fieldType.getAnimation(fieldType: fieldState?.type, title: fieldState?.name)
                     )
                     .focused($focus, equals: fieldState?.type)
-                    
-                    Image(systemName: "photo")
-                        .frame(width: 150, height: 150)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.blue, lineWidth: 3)
-                        )
+                    Group {
+                        if let url = URL(string: imageUrl) {
+                            AsyncImage(url: url) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: 150, height: 150)
+                            } placeholder: {
+                                ProgressView()
+                            }
+                        } else {
+                            Image(systemName: "photo")
+                                .frame(width: 150, height: 150)
+                        }
+                    }
+                    .frame(width: 160, height: 160)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.blue, lineWidth: 3)
+                    )
+                    .onTapGesture {
+                        imageTapped.send()
+                    }
                 }
                 .padding()
             case let .category(categoryFieldType):

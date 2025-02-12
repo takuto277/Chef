@@ -8,14 +8,14 @@
 import SwiftUI
 
 internal enum FieldSessionType: Hashable {
-    case nameAndImage(titleField: FieldType, imageName: String)
+    case nameAndImage(titleField: FieldType, imageUrl: String)
     case category(FieldType)
     case expiration(expirationField: FieldType, quantity: Int)
     case memo(memoField: FieldType)
     
     static func allInitialCases(imageUrl: String?, quantity: Int = 0) -> [FieldSessionType] {
         return [
-            .nameAndImage(titleField: .name, imageName: imageUrl ?? ""),
+            .nameAndImage(titleField: .name, imageUrl: imageUrl ?? ""),
             .category(.category),
             .expiration(expirationField: .expiration, quantity: quantity),
             .memo(memoField: .memo)
