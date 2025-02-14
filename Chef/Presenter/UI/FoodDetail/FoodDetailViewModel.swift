@@ -15,6 +15,7 @@ extension FoodDetailViewModel {
         let imageTapped: AnyPublisher<Void, Never>
         let showImagePicker: AnyPublisher<Void, Never>
         let selectedImage: AnyPublisher<UIImage, Never>
+        let saveTapped: AnyPublisher<Void, Never>
     }
 
     class FieldState: ObservableObject, Identifiable {
@@ -34,6 +35,7 @@ extension FoodDetailViewModel {
         @Published var fieldType: FieldType = .none
         @Published var keyboardVisible = false
         @Published var showAlert: Bool = false
+        @Published var alertType: AlertType = .save
         @Published var showImagePicker: Bool = false
     }
 }
@@ -87,6 +89,7 @@ internal final class FoodDetailViewModel: ObservableObject {
             .sink { [weak self] in
                 guard let self else { return }
                 self.output.showAlert = true
+                self.output.alertType = .changeImage
             }
             .store(in: &cancellables)
         input.showImagePicker
@@ -99,6 +102,12 @@ internal final class FoodDetailViewModel: ObservableObject {
             .sink { [weak self] image in
                 guard let self else { return }
                 self.saveImage(image)
+            }
+            .store(in: &cancellables)
+        input.saveTapped
+            .sink { [weak self] in
+                guard let self else { return }
+                self.saveTapped()
             }
             .store(in: &cancellables)
         return output
@@ -123,6 +132,20 @@ internal final class FoodDetailViewModel: ObservableObject {
     
     private func getDocumentsDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+    
+    private func saveTapped() {
+        if isFoodDetailEmpty() {
+            output.showAlert = true
+            output.alertType = .emptyField
+        } else {
+            output.showAlert = true
+            output.alertType = .save
+        }
+    }
+    
+    private func isFoodDetailEmpty() -> Bool {
+        return output.fields.contains { $0.name.isEmpty }
     }
     
     func updateImageUrlInFieldSessionType(newUrl: String) {
@@ -159,7 +182,7 @@ private extension FieldSessionType {
         switch self {
         case .nameAndImage:
             return true
-        case .category, .expiration, .memo:
+        case .category, .expiration, .memo, .save:
             return false
         }
     }

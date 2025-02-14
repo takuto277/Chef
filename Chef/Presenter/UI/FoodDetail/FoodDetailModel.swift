@@ -12,13 +12,15 @@ internal enum FieldSessionType: Hashable {
     case category(FieldType)
     case expiration(expirationField: FieldType, quantity: Int)
     case memo(memoField: FieldType)
+    case save
     
     static func allInitialCases(imageUrl: String?, quantity: Int = 0) -> [FieldSessionType] {
         return [
             .nameAndImage(titleField: .name, imageUrl: imageUrl ?? ""),
             .category(.category),
             .expiration(expirationField: .expiration, quantity: quantity),
-            .memo(memoField: .memo)
+            .memo(memoField: .memo),
+            .save
         ]
     }
 }
@@ -86,4 +88,10 @@ internal enum FieldType: CaseIterable {
             return fieldType.width
         }
     }
+}
+
+enum AlertType {
+    case changeImage
+    case emptyField
+    case save
 }

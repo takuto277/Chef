@@ -18,6 +18,7 @@ struct FoodDetailView: View {
     let imageTapped = PassthroughSubject<Void, Never>()
     let showImagePicker = PassthroughSubject<Void, Never>()
     let selectedImage = PassthroughSubject<UIImage, Never>()
+    let saveTapped = PassthroughSubject<Void, Never>()
     
     @State private var selectedUIImage: UIImage?
     
@@ -30,7 +31,8 @@ struct FoodDetailView: View {
             updateField: updateField.eraseToAnyPublisher(),
             imageTapped: imageTapped.eraseToAnyPublisher(),
             showImagePicker: showImagePicker.eraseToAnyPublisher(),
-            selectedImage: selectedImage.eraseToAnyPublisher()
+            selectedImage: selectedImage.eraseToAnyPublisher(),
+            saveTapped: saveTapped.eraseToAnyPublisher()
         )
         output = viewModel.subscribe(input: input)
     }
@@ -41,14 +43,32 @@ struct FoodDetailView: View {
                 ImagePicker(image: $selectedUIImage)
             }
             .alert(isPresented: $output.showAlert) {
-                Alert(
-                    title: Text("画像を選択"),
-                    message: Text("画像をフォトライブラリから選択しますか？"),
-                    primaryButton: .default(Text("はい")) {
-                        showImagePicker.send()
-                    },
-                    secondaryButton: .cancel()
-                )
+                switch output.alertType {
+                case .changeImage:
+                    Alert(
+                        title: Text("画像を選択"),
+                        message: Text("画像をフォトライブラリから選択しますか？"),
+                        primaryButton: .default(Text("はい")) {
+                            showImagePicker.send()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                case .emptyField:
+                    Alert(
+                        title: Text("注意"),
+                        message: Text("空白があります。\n入力してください。"),
+                        dismissButton: .default(Text("はい"))
+                    )
+                case .save:
+                    Alert(
+                        title: Text("確認"),
+                        message: Text("登録を完了してよろしいでしょうか？"),
+                        primaryButton: .default(Text("はい")) {
+                            //TODO: 登録処理を追加
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
             }
             .onChange(of: selectedUIImage) { _, newImage in
                 if let uiImage = newImage {
@@ -120,6 +140,7 @@ struct FoodDetailView: View {
                 }
                 .padding()
             case let .category(categoryFieldType):
+                // TODO: カテゴリを選択できるようにする
                 let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
                     field.type == categoryFieldType
                 }
@@ -137,6 +158,7 @@ struct FoodDetailView: View {
                 )
                 .focused($focus, equals: fieldState?.type)
             case let .expiration(expirationField: expirationFieldType, quantity: quantity):
+                // TODO: 日付を選択できるようにする
                 HStack {
                     let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
                         field.type == expirationFieldType
@@ -158,6 +180,7 @@ struct FoodDetailView: View {
                     Text(String(quantity))
                 }
             case let .memo(memoField: memoFieldType):
+                // TODO: メモを広げる
                 let fieldState: FoodDetailViewModel.FieldState? = output.fields.first { field in
                     field.type == memoFieldType
                 }
@@ -175,6 +198,13 @@ struct FoodDetailView: View {
                 )
                 .focused($focus, equals: fieldState?.type)
                 .frame(height: 500)
+            case .save:
+                Button(action: {
+                    saveTapped.send()
+                }) {
+                    Text("保存")
+                }
+                .padding()
             }
         }
     }
