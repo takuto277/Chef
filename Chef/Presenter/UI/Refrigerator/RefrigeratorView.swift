@@ -20,7 +20,6 @@ struct FoodItem: Identifiable {
 struct RefrigeratorView: View {
     private var viewModel: RefrigeratorViewModel
     
-    let addFoodSubject = PassthroughSubject<Void, Never>()
     let buttonType = PassthroughSubject<RefrigeratorButtonType, Never>()
     
     @ObservedObject private var output: RefrigeratorViewModel.Output
@@ -31,7 +30,6 @@ struct RefrigeratorView: View {
             useCase: useCase
         )
         let input = RefrigeratorViewModel.Input(
-            addFoodSubject: addFoodSubject.eraseToAnyPublisher(),
             buttonType: buttonType.eraseToAnyPublisher()
         )
         output = viewModel.subscribe(input: input)
