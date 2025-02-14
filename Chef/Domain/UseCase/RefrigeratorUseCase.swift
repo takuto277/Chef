@@ -8,7 +8,7 @@
 import Foundation
 
 internal protocol RefrigeratorUseCase {
-    func create(name: String, imageData: Data?, category: String, quantity: Int, expirationDate: String, memo: String) async throws
+    func create(name: String, imageUrl: String?, category: String, quantity: Int, expirationDate: String, memo: String) async throws
     func fetchAll() async throws -> [Food]
     func update(oldFood: Food) async throws
 }
@@ -24,7 +24,7 @@ final class RefrigeratorUseCaseImpl: RefrigeratorUseCase {
     
     internal func create(
         name: String,
-        imageData: Data?,
+        imageUrl: String?,
         category: String,
         quantity: Int,
         expirationDate: String,
@@ -39,7 +39,7 @@ final class RefrigeratorUseCaseImpl: RefrigeratorUseCase {
             quantity: quantity,
             expirationDate: expirationDate,
             memo: memo,
-            imageData: imageData,
+            imageUrl: imageUrl,
             createTime: nowDate,
             updateTime: nowDate,
             purchaseCount: 0

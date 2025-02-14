@@ -20,14 +20,18 @@ struct FoodItem: Identifiable {
 struct RefrigeratorView: View {
     private var viewModel: RefrigeratorViewModel
     
-    let addFoodSubject = PassthroughSubject<Void, Never>()
+    let buttonType = PassthroughSubject<RefrigeratorButtonType, Never>()
     
     @ObservedObject private var output: RefrigeratorViewModel.Output
     
     init() {
         let useCase: RefrigeratorUseCase = RefrigeratorUseCaseImpl()
-        viewModel = RefrigeratorViewModel(useCase: useCase)
-        let input = RefrigeratorViewModel.Input(addFoodSubject: addFoodSubject.eraseToAnyPublisher())
+        viewModel = RefrigeratorViewModel(
+            useCase: useCase
+        )
+        let input = RefrigeratorViewModel.Input(
+            buttonType: buttonType.eraseToAnyPublisher()
+        )
         output = viewModel.subscribe(input: input)
     }
     
@@ -59,7 +63,7 @@ struct RefrigeratorView: View {
     private let categories = ["野菜", "果物", "肉", "魚", "乳製品", "穀物ああああああああああああああ"]
     
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $output.navigationPath) {
             ZStack(alignment: .topLeading) {
                 VStack {
                     navigationBarView
@@ -80,6 +84,12 @@ struct RefrigeratorView: View {
                 }
             }
             .navigationBarHidden(true)
+            .navigationDestination(for: RefrigeratorNavigationType.self) { type in
+                switch type {
+                case .foodDetail:
+                    FoodDetailView(initialFoodDetail: nil)
+                }
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -110,7 +120,7 @@ struct RefrigeratorView: View {
                 
                 HStack(spacing: 20) {
                     Button(action: {
-                        // 検索アクション
+                        buttonType.send(.search)
                     }) {
                         Image(systemName: "magnifyingglass")
                             .font(.title)
@@ -118,7 +128,7 @@ struct RefrigeratorView: View {
                     }
                     
                     Button(action: {
-                        // 食材を追加するアクション
+                        buttonType.send(.plus)
                     }) {
                         Image(systemName: "plus")
                             .font(.title)
@@ -126,7 +136,7 @@ struct RefrigeratorView: View {
                     }
                     
                     Button(action: {
-                        // メニューを開くアクション
+                        buttonType.send(.menu)
                     }) {
                         Image(systemName: "line.horizontal.3")
                             .font(.title)
@@ -148,8 +158,8 @@ struct RefrigeratorView: View {
     private var foodListView: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 10) {
-                ForEach(arrayFoods.filter { $0.category == selectedCategory }) { food in
-                    NavigationLink(destination: FoodDetailView()) {
+                ForEach(output.foods.filter { $0.category == selectedCategory }) { food in
+                    NavigationLink(destination: FoodDetailView(initialFoodDetail: food)) {
                         FoodCellView(food: food)
                     }
                     .buttonStyle(PlainButtonStyle())

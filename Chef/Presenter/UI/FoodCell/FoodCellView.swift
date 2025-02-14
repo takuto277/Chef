@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FoodCellView: View {
-    let food: FoodItem
+    let food: Food
 
     var body: some View {
         VStack(alignment: .center, spacing: 5) {

@@ -14,7 +14,7 @@ final class Food: DBModel {
     var updateTime: String
     @Attribute(.unique) var id: Int
     var name: String
-    var imageData: Data?
+    var imageUrl: String?
     var category: String
     var quantity: Int
     var expirationDate: String
@@ -29,7 +29,7 @@ final class Food: DBModel {
         quantity: Int,
         expirationDate: String,
         memo: String,
-        imageData: Data?,
+        imageUrl: String?,
         createTime: String = "",
         updateTime: String = "",
         purchaseCount: Int
@@ -40,7 +40,7 @@ final class Food: DBModel {
         self.quantity = quantity
         self.expirationDate = expirationDate
         self.memo = memo
-        self.imageData = imageData
+        self.imageUrl = imageUrl
         self.createTime = createTime
         self.updateTime = updateTime
         self.purchaseCount = purchaseCount

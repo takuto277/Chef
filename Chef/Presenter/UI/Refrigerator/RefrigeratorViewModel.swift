@@ -7,50 +7,58 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 extension RefrigeratorViewModel {
     struct Input {
-        let addFoodSubject: AnyPublisher<Void, Never>
+        let buttonType: AnyPublisher<RefrigeratorButtonType, Never>
     }
     
     class Output: ObservableObject {
         @Published var foodName: String = ""
         @Published var foodCalories: String = ""
+        @Published var navigationPath = NavigationPath()
+        @Published var foods: [Food] = []
     }
 }
 
+@MainActor
 internal class RefrigeratorViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let useCase: RefrigeratorUseCase
     var output = Output()
     
     
-    init(useCase: RefrigeratorUseCase) {
+    init(
+        useCase: RefrigeratorUseCase
+    ) {
         self.useCase = useCase
+        Task {
+            await fetchAllFoods()
+        }
+    }
+    
+    private func fetchAllFoods() async {
+        do {
+            output.foods = try await useCase.fetchAll()
+        } catch {
+            // TODO: アラートの表示
+            print("食べ物の取得に失敗しました: \(error)")
+        }
     }
     
     internal func subscribe(input: Input) -> Output {
-        input.addFoodSubject
-            .sink { [weak self] in
+        input.buttonType
+            .sink { [weak self] type in
                 guard let self else { return }
                 Task {
-                    // テスト確認用 ゴミだからいつ消してもらっても構わない
-                    try? await self.useCase.create(name: "これは更新前", imageData: nil, category: "", quantity: 1, expirationDate: "", memo: "")
-                    let hoge = try? await self.useCase.fetchAll()
-                    hoge?.forEach { i in
-                        Task {
-                            print("\(i.name):\(i.id)")
-                            i.name = "これは更新後"
-                            try? await self.useCase.update(oldFood: i)
-                        }
-                    }
-                    let fuga = try? await self.useCase.fetchAll()
-                    fuga?.forEach { i in
-                        Task {
-                    //        i.name = "これは更新後"
-                     //       try? await self.useCase.update(oldFood: i)
-                            print("\(i.name):\(i.id)")
-                        }
+                    switch type {
+                    case .search:
+                        break
+                    case .plus:
+                        self.output.navigationPath.append(RefrigeratorNavigationType.foodDetail)
+                    case .menu:
+                        break
                     }
                 }
             }
