@@ -2,6 +2,7 @@
 
 # APIキーや機密情報を含む設定ファイル
 GenerativeAI-Info.plist
+Info.plist
 config/APIKey.swift
 
 # 環境変数ファイル
