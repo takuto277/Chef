@@ -1,0 +1,15 @@
+# .gitignore
+
+# APIキーや機密情報を含む設定ファイル
+config/Secrets.swift
+
+# 環境変数ファイル
+.env
+
+# ビルド成果物
+build/
+*.o
+*.log
+
+# その他無視したいファイルやディレクトリ
+.DS_Store
