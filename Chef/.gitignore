@@ -1,7 +1,7 @@
 # .gitignore
 
 # APIキーや機密情報を含む設定ファイル
-GenerativeAI-Info
+GenerativeAI-Info.plist
 config/APIKey.swift
 
 # 環境変数ファイル
