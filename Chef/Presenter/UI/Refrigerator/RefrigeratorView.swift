@@ -8,15 +8,6 @@
 import SwiftUI
 import Combine
 
-struct FoodItem: Identifiable {
-    let id = UUID()
-    let name: String
-    let count: Int
-    let imageName: String
-    let category: String
-    let description: String
-}
-
 struct RefrigeratorView: View {
     private var viewModel: RefrigeratorViewModel
     
@@ -34,25 +25,6 @@ struct RefrigeratorView: View {
         )
         output = viewModel.subscribe(input: input)
     }
-    
-    // test用
-    @State private var arrayFoods: [FoodItem] = [
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "玉ねぎ", count: 2, imageName: "onion", category: "野菜", description: "新鮮な玉ねぎです。"),
-        FoodItem(name: "ねぎ", count: 1, imageName: "green_onion", category: "野菜", description: "香り高いねぎ。"),
-        FoodItem(name: "レモン", count: 5, imageName: "lemon", category: "果物", description: "ビタミン豊富なレモン。"),
-        FoodItem(name: "白菜", count: 3, imageName: "cabbage", category: "野菜", description: "瑞々しい白菜。")
-    ]
 
     @State private var selectedCategory: String = "野菜"
     @State private var isCategoryDropdownVisible: Bool = false
