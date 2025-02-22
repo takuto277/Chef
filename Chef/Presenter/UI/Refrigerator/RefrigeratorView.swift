@@ -12,8 +12,12 @@ struct RefrigeratorView: View {
     private var viewModel: RefrigeratorViewModel
     
     let buttonType = PassthroughSubject<RefrigeratorButtonType, Never>()
+    let showCamera = PassthroughSubject<Void, Never>()
+    let showImagePicker = PassthroughSubject<Void, Never>()
+    let selectedImage = PassthroughSubject<UIImage, Never>()
     
     @ObservedObject private var output: RefrigeratorViewModel.Output
+    @State private var selectedUIImage: UIImage?
     
     init() {
         let useCase: RefrigeratorUseCase = RefrigeratorUseCaseImpl()
@@ -21,7 +25,11 @@ struct RefrigeratorView: View {
             useCase: useCase
         )
         let input = RefrigeratorViewModel.Input(
-            buttonType: buttonType.eraseToAnyPublisher()
+            buttonType: buttonType.eraseToAnyPublisher(),
+            showCamera: showCamera.eraseToAnyPublisher(),
+            showImagePicker: showImagePicker.eraseToAnyPublisher(),
+            selectedImage: selectedImage.eraseToAnyPublisher()
+            
         )
         output = viewModel.subscribe(input: input)
     }
@@ -62,6 +70,26 @@ struct RefrigeratorView: View {
                     FoodDetailView(initialFoodDetail: nil)
                 }
             }
+            .sheet(isPresented: $output.showImagePicker) {
+                ImagePicker(image: $selectedUIImage)
+            }
+            .alert(output.alertType.title, isPresented: $output.showAlert) {
+                switch output.alertType {
+                case .camera:
+                    Button("カメラで撮影") {
+                        showCamera.send()
+                    }
+                    Button("フォトライブラリから選択") {
+                        showImagePicker.send()
+                    }
+                    Button("キャンセル", role: .cancel) {}
+                }
+            }
+            .onChange(of: selectedUIImage) { _, newImage in
+                if let uiImage = newImage {
+                    selectedImage.send(uiImage)
+                }
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -91,6 +119,13 @@ struct RefrigeratorView: View {
                 Spacer()
                 
                 HStack(spacing: 20) {
+                    Button(action: {
+                        buttonType.send(.camera)
+                    }) {
+                        Image(systemName: "camera")
+                            .font(.title)
+                            .foregroundColor(.mainYellow)
+                    }
                     Button(action: {
                         buttonType.send(.search)
                     }) {

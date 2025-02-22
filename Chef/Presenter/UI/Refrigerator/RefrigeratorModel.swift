@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum RefrigeratorButtonType {
+    case camera
     case search
     case plus
     case menu
@@ -15,4 +16,15 @@ enum RefrigeratorButtonType {
 
 enum RefrigeratorNavigationType {
     case foodDetail
+}
+
+enum RefrigeratorAlertType {
+    case camera
+    
+    var title: String {
+        switch self {
+        case .camera:
+            "画像から食材を保存します"
+        }
+    }
 }

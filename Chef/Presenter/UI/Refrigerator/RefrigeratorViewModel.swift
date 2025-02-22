@@ -12,6 +12,9 @@ import SwiftUI
 extension RefrigeratorViewModel {
     struct Input {
         let buttonType: AnyPublisher<RefrigeratorButtonType, Never>
+        let showCamera: AnyPublisher<Void, Never>
+        let showImagePicker: AnyPublisher<Void, Never>
+        let selectedImage: AnyPublisher<UIImage, Never>
     }
     
     class Output: ObservableObject {
@@ -19,6 +22,10 @@ extension RefrigeratorViewModel {
         @Published var foodCalories: String = ""
         @Published var navigationPath = NavigationPath()
         @Published var foods: [Food] = []
+        @Published var showAlert: Bool = false
+        @Published var alertType: RefrigeratorAlertType = .camera
+        @Published var showCamera: Bool = false
+        @Published var showImagePicker: Bool = false
     }
 }
 
@@ -53,6 +60,9 @@ internal class RefrigeratorViewModel: ObservableObject {
                 guard let self else { return }
                 Task {
                     switch type {
+                    case .camera:
+                        self.output.alertType = .camera
+                        self.output.showAlert = true
                     case .search:
                         break
                     case .plus:
@@ -61,6 +71,24 @@ internal class RefrigeratorViewModel: ObservableObject {
                         break
                     }
                 }
+            }
+            .store(in: &cancellables)
+        input.showCamera
+            .sink { [weak self] in
+                guard let self else { return }
+                self.output.showCamera = true
+            }
+            .store(in: &cancellables)
+        input.showImagePicker
+            .sink { [weak self] in
+                guard let self else { return }
+                self.output.showImagePicker = true
+            }
+            .store(in: &cancellables)
+        input.selectedImage
+            .sink { [weak self] image in
+                guard let self else { return }
+                // TODO: 画像取得後にAPI叩く処理
             }
             .store(in: &cancellables)
         return output
