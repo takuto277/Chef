@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		994809C52D69B8DF00725E74 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 994809C42D69B8DF00725E74 /* GoogleGenerativeAI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		99880D0D2CEE1B5900F0C419 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				994809C52D69B8DF00725E74 /* GoogleGenerativeAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +130,7 @@
 			);
 			name = Chef;
 			packageProductDependencies = (
+				994809C42D69B8DF00725E74 /* GoogleGenerativeAI */,
 			);
 			productName = Chef;
 			productReference = 99880CFA2CEE1B5700F0C419 /* Chef.app */;
@@ -208,6 +214,9 @@
 			);
 			mainGroup = 99880CF12CEE1B5700F0C419;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				994809C32D69B8DF00725E74 /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 99880CFB2CEE1B5700F0C419 /* Products */;
 			projectDirPath = "";
@@ -575,6 +584,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		994809C32D69B8DF00725E74 /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/generative-ai-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		994809C42D69B8DF00725E74 /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 994809C32D69B8DF00725E74 /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 99880CF22CEE1B5700F0C419 /* Project object */;
 }
