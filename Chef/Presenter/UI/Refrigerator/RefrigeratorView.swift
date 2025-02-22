@@ -73,6 +73,9 @@ struct RefrigeratorView: View {
             .sheet(isPresented: $output.showImagePicker) {
                 ImagePicker(image: $selectedUIImage)
             }
+            .fullScreenCover(isPresented: $output.showCamera) {
+                CameraView(isPresented: $output.showCamera, image: $selectedUIImage)
+            }
             .alert(output.alertType.title, isPresented: $output.showAlert) {
                 switch output.alertType {
                 case .camera:
