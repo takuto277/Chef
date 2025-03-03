@@ -10,10 +10,11 @@ import GoogleGenerativeAI
 import UIKit
 
 internal protocol GenerativeAIRepository: Actor {
-
+    func analyzeFoodItems(_ image: UIImage) async throws -> [AnalyzeFood]
 }
 
 internal actor GenerativeAIRepositoryImpl: GenerativeAIRepository {
+    static let shared = GenerativeAIRepositoryImpl()
     private let model: GenerativeModel
     
     init() {

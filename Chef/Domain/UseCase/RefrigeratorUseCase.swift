@@ -6,20 +6,25 @@
 //
 
 import Foundation
+import UIKit
 
 internal protocol RefrigeratorUseCase {
     func create(name: String, imageUrl: String?, category: String, quantity: Int, expirationDate: String, memo: String) async throws
     func fetchAll() async throws -> [Food]
     func update(oldFood: Food) async throws
+    func analyzeFoodItems(_ image: UIImage) async throws -> [AnalyzeFood]
 }
 
 final class RefrigeratorUseCaseImpl: RefrigeratorUseCase {
     private let foodRepository: FoodRepository
+    private let generativeAIRepository: GenerativeAIRepository
     
     internal init(
-        foodRepository: FoodRepository = FoodRepositoryFactory.createRepository()
+        foodRepository: FoodRepository = FoodRepositoryFactory.createRepository(),
+        generativeAIRepository: GenerativeAIRepository = GenerativeAIRepositoryImpl.shared
     ) {
         self.foodRepository = foodRepository
+        self.generativeAIRepository = generativeAIRepository
     }
     
     internal func create(
@@ -53,5 +58,9 @@ final class RefrigeratorUseCaseImpl: RefrigeratorUseCase {
     
     internal func update(oldFood: Food) async throws {
         try await foodRepository.updateFood(oldFood: oldFood)
+    }
+    
+    internal func analyzeFoodItems(_ image: UIImage) async throws -> [AnalyzeFood] {
+        try await generativeAIRepository.analyzeFoodItems(image)
     }
 }

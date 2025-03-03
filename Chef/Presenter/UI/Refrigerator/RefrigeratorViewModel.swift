@@ -26,6 +26,8 @@ extension RefrigeratorViewModel {
         @Published var alertType: RefrigeratorAlertType = .camera
         @Published var showCamera: Bool = false
         @Published var showImagePicker: Bool = false
+        @Published var analyzeFoods: [AnalyzeFood] = []
+        @Published var showAnalyzeFood: Bool = false
     }
 }
 
@@ -88,7 +90,16 @@ internal class RefrigeratorViewModel: ObservableObject {
         input.selectedImage
             .sink { [weak self] image in
                 guard let self else { return }
-                // TODO: 画像取得後にAPI叩く処理
+                Task {
+                    do {
+                        let response = try await self.useCase.analyzeFoodItems(image)
+                        self.output.analyzeFoods = response
+                        self.output.showAnalyzeFood = true
+                    } catch let error{
+                        print("🌱\(error.localizedDescription)")
+                    }
+                    
+                }
             }
             .store(in: &cancellables)
         return output
