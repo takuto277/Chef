@@ -1,5 +1,5 @@
 //
-//  GenarativeAIRepository.swift
+//  GenerativeAIRepository.swift
 //  Chef
 //
 //  Created by 小野拓人 on 2025/03/04.
@@ -9,11 +9,11 @@ import Foundation
 import GoogleGenerativeAI
 import UIKit
 
-internal protocol GenarativeAIRepository: Actor {
-    
+internal protocol GenerativeAIRepository: Actor {
+
 }
 
-internal actor GenarativeAIRepositoryImpl: GenarativeAIRepository {
+internal actor GenerativeAIRepositoryImpl: GenerativeAIRepository {
     private let model: GenerativeModel
     
     init() {
