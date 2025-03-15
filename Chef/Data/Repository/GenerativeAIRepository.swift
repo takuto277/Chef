@@ -18,17 +18,10 @@ internal actor GenerativeAIRepositoryImpl: GenerativeAIRepository {
     private let model: GenerativeModel
     
     init() {
-        self.model = GenerativeModel(name: "gemini-pro", apiKey: APIKey.default)
+        self.model = GenerativeModel(name: "gemini-1.5-flash", apiKey: APIKey.default)
     }
     
     func analyzeFoodItems(_ image: UIImage) async throws -> [AnalyzeFood] {
-        guard let imageData = image.jpegData(compressionQuality: 0.5),
-              let base64String = imageData.base64EncodedString().addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            throw GeminiError.imageConversionFailed
-        }
-        
-        let generativeModel = GenerativeModel(name: "gemini-1.5-flash", apiKey: APIKey.default)
-        
         let prompt = """
                     List all visible food items & quantities as JSON:
                     {
@@ -37,41 +30,45 @@ internal actor GenerativeAIRepositoryImpl: GenerativeAIRepository {
                         ]
                     }
                     Names in Japanese, count visible items only.
-                    Image: \(base64String)
                     """
-        let response = try await model.generateContent(prompt)
-        if let text = response.text {
-            print("🌱\(text)")
+        let response = try await model.generateContent(prompt, image)
+        
+        guard let responseText = response.text else {
+            throw GeminiError.invalidResponse
         }
         
-        guard let jsonString = response.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-              let jsonData = jsonString.data(using: .utf8) else {
+        var jsonString = responseText
+        
+        // マークダウンコードブロックの削除
+        let codeBlockPattern = "```(?:json)?([\\s\\S]*?)```"
+        if let regex = try? NSRegularExpression(pattern: codeBlockPattern),
+           let match = regex.firstMatch(in: jsonString, range: NSRange(jsonString.startIndex..., in: jsonString)) {
+            if let range = Range(match.range(at: 1), in: jsonString) {
+                // コードブロック内のコンテンツだけを抽出
+                jsonString = String(jsonString[range])
+            }
+        }
+        
+        // 各行の余分な空白を削除
+        jsonString = jsonString.split(separator: "\n")
+                               .map { $0.trimmingCharacters(in: .whitespaces) }
+                               .joined(separator: "\n")
+                               .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard let jsonData = jsonString.data(using: .utf8) else {
             throw GeminiError.invalidResponse
         }
         
         let decoder = JSONDecoder()
         do {
             let result = try decoder.decode(AnalyzeFoodResponse.self, from: jsonData)
+            
+            if result.foods.isEmpty {
+                throw GeminiError.noFoodItemsDetected
+            }
             return result.foods
         } catch let error {
-            throw GeminiError.parsingError(error.localizedDescription)
-        }
-    }
-}
-
-enum GeminiError: Error {
-    case imageConversionFailed
-    case invalidResponse
-    case parsingError(String)
-    
-    var localizedDescription: String {
-        switch self {
-        case .imageConversionFailed:
-            return "画像の変換に失敗しました"
-        case .invalidResponse:
-            return "AIからの応答の解析に失敗しました"
-        case .parsingError(let message):
-            return "データの解析エラー: \(message)"
+            throw GeminiError.parsingError(error.localizedDescription, jsonString)
         }
     }
 }
