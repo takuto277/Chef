@@ -22,6 +22,16 @@ internal actor GenerativeAIRepositoryImpl: GenerativeAIRepository {
     }
     
     func analyzeFoodItems(_ image: UIImage) async throws -> [AnalyzeFood] {
+        
+        // 開発モードやテスト時に使用するモックデータ
+        #if DEBUG
+        let useMockData = true
+        if useMockData {
+            // モックデータを使用
+            return try processMockResponse()
+        }
+        #endif
+        
         let prompt = """
                     List all visible food items & quantities as JSON:
                     {
@@ -36,7 +46,12 @@ internal actor GenerativeAIRepositoryImpl: GenerativeAIRepository {
         guard let responseText = response.text else {
             throw GeminiError.invalidResponse
         }
+        print("Geminiのレスポンスjson: \(responseText)")
         
+        return try processResponseText(responseText)
+    }
+    
+    private func processResponseText(_ responseText: String) throws -> [AnalyzeFood] {
         var jsonString = responseText
         
         // マークダウンコードブロックの削除
@@ -51,13 +66,15 @@ internal actor GenerativeAIRepositoryImpl: GenerativeAIRepository {
         
         // 各行の余分な空白を削除
         jsonString = jsonString.split(separator: "\n")
-                               .map { $0.trimmingCharacters(in: .whitespaces) }
-                               .joined(separator: "\n")
-                               .trimmingCharacters(in: .whitespacesAndNewlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .joined(separator: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard let jsonData = jsonString.data(using: .utf8) else {
             throw GeminiError.invalidResponse
         }
+        
+        print("整形後のjson:\n\(jsonString)")
         
         let decoder = JSONDecoder()
         do {
@@ -70,5 +87,37 @@ internal actor GenerativeAIRepositoryImpl: GenerativeAIRepository {
         } catch let error {
             throw GeminiError.parsingError(error.localizedDescription, jsonString)
         }
+    }
+    
+    private func processMockResponse() throws -> [AnalyzeFood] {
+        // 提供されたJSONサンプル
+        let mockJson = """
+        ```json
+        {
+          "foods": [
+            {"name": "キャベツ", "quantity": "2"},
+            {"name": "ピーマン", "quantity": "2"},
+            {"name": "パプリカ", "quantity": "1"},
+            {"name": "玉ねぎ", "quantity": "2"},
+            {"name": "ナス", "quantity": "2"},
+            {"name": "トマト", "quantity": "2"},
+            {"name": "じゃがいも", "quantity": "3"},
+            {"name": "にんじん", "quantity": "3"},
+            {"name": "アボカド", "quantity": "1"},
+            {"name": "ミニトマト", "quantity": "8"},
+            {"name": "キュウリ", "quantity": "1"},
+            {"name": "ブロッコリー", "quantity": "1"},
+            {"name": "アスパラガス", "quantity": "約10"},
+            {"name": "カブ", "quantity": "1"},
+            {"name": "マッシュルーム", "quantity": "7"},
+            {"name": "パセリ", "quantity": "1束"}
+
+          ]
+        }
+        ```
+        """
+        
+        // 通常のレスポンス処理メソッドを再利用
+        return try processResponseText(mockJson)
     }
 }
