@@ -95,7 +95,7 @@ internal class RefrigeratorViewModel: ObservableObject {
                         let response = try await self.useCase.analyzeFoodItems(image)
                         self.output.analyzeFoods = response
                         self.output.showAnalyzeFood = true
-                    } catch let error{
+                    } catch let error as GeminiError {
                         print("🌱\(error.localizedDescription)")
                     }
                     
