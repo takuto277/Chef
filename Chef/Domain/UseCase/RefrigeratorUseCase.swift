@@ -25,7 +25,8 @@ final class RefrigeratorUseCaseImpl: RefrigeratorUseCase {
     
     internal init(
         foodRepository: FoodRepository = FoodRepositoryFactory.createRepository(),
-        generativeAIRepository: GenerativeAIRepository = GenerativeAIRepositoryImpl.shared,
+        // TODO: 【⚠️注意】モックデータのため、GeminiAPIは処理されていない状態
+        generativeAIRepository: GenerativeAIRepository = GenerativeAIRepositoryMock.shared,
         pixabayRepository: PixabayRepository = PixabayRepositoryImpl.shared
     ) {
         self.foodRepository = foodRepository
