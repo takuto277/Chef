@@ -27,6 +27,8 @@ extension RefrigeratorViewModel {
         @Published var showCamera: Bool = false
         @Published var showImagePicker: Bool = false
         @Published var analyzeFoods: [AnalyzeFood] = []
+        @Published var segmentedFoods: [SegmentedFood] = []
+        @Published var image: UIImage?
         @Published var showAnalyzeFood: Bool = false
     }
 }
@@ -93,9 +95,13 @@ internal class RefrigeratorViewModel: ObservableObject {
                 Task {
                     do {
                         let response = try await self.useCase.analyzeFoodItems(image)
+                        let segmentFoods = try await self.useCase.segmentFoods(image: image, foods: response)
+                        self.output.image = image
+                        self.output.segmentedFoods = segmentFoods
                         self.output.analyzeFoods = response
                         self.output.showAnalyzeFood = true
                     } catch let error as GeminiError {
+                        // TODO: 失敗した時のエラーアラート表示
                         print("🌱\(error.localizedDescription)")
                     }
                     
