@@ -76,6 +76,9 @@ struct RefrigeratorView: View {
             .fullScreenCover(isPresented: $output.showCamera) {
                 CameraView(isPresented: $output.showCamera, image: $selectedUIImage)
             }
+            .sheet(isPresented: $output.showAnalyzeFood) {
+                SegmentedFoodsView(segmentedFoods: output.segmentedFoods)
+            }
             .alert(output.alertType.title, isPresented: $output.showAlert) {
                 switch output.alertType {
                 case .camera:
@@ -240,5 +243,45 @@ struct Triangle: Shape {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         RefrigeratorView()
+    }
+}
+
+// TODO: GenimiAPIとPixabayの分析後に一覧を表示しているから登録できるようにする
+// やるべきこと
+// - 登録処理
+// - 画像の置き換え
+// - 元画像の設定
+// - 元画像のトリミング
+// - 個数の変更/名前の変更
+// - 写真が気に食わなかったら、それだけ取り直しする
+// - 同じ名前のものが既に登録されていたら、それのDBを引っ張ってきてそれに個数を追加させるようにする
+struct SegmentedFoodsView: View {
+    let segmentedFoods: [SegmentedFood]
+    
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 16) {
+                ForEach(segmentedFoods) { food in
+                    VStack {
+                        Image(uiImage: food.image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 150, height: 150)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        
+                        Text(food.name)
+                        
+                        Text("数量: \(food.quantity)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(12)
+                    .shadow(radius: 3)
+                }
+            }
+            .padding()
+        }
     }
 }
