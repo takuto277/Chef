@@ -10,11 +10,11 @@ import UIKit
 
 struct SegmentedFood: Identifiable {
     let id: UUID
-    let name: String
-    let quantity: String
-    let image: UIImage
+    var name: String
+    var quantity: String
+    var image: UIImage?
     
-    init(id: UUID, name: String, quantity: String, image: UIImage) {
+    init(id: UUID, name: String, quantity: String, image: UIImage?) {
         self.id = id
         self.name = name
         self.quantity = quantity
